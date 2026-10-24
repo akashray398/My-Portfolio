@@ -296,6 +296,7 @@ function App() {
             >
               <span className="photo-corner photo-corner-top" />
               <span className="photo-corner photo-corner-bottom" />
+              <span className="photo-rays" aria-hidden="true" />
               <img
                 src={profilePhoto}
                 alt="Professional headshot of Akash Kumar Yadav in a suit and tie"
@@ -375,14 +376,26 @@ function App() {
             }
           />
           <div className="education-grid">
-            {education.map((item) => (
-              <article className="education-card" key={`${item.qualification}-${item.institution}`}>
+            {education.map((item, index) => (
+              <motion.article
+                className="education-card"
+                key={`${item.qualification}-${item.institution}`}
+                initial={reduceMotion ? false : { opacity: 0, y: 18 }}
+                whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
+                whileHover={reduceMotion ? undefined : { y: -5 }}
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{
+                  duration: reduceMotion ? 0 : 0.48,
+                  delay: reduceMotion ? 0 : index * 0.1,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+              >
                 <span className="eyebrow">{item.date}</span>
                 <h3>{item.qualification}</h3>
                 <p className="education-subject">{item.subject}</p>
                 <p>{item.institution}</p>
                 <strong>{item.result}</strong>
-              </article>
+              </motion.article>
             ))}
           </div>
         </motion.section>
@@ -478,7 +491,18 @@ function App() {
 
           <div className="timeline">
             {experience.map((item, index) => (
-              <div className="timeline-item" key={`${item.title}-${item.company}`}>
+              <motion.div
+                className="timeline-item"
+                key={`${item.title}-${item.company}`}
+                initial={reduceMotion ? false : { opacity: 0, x: -18 }}
+                whileInView={reduceMotion ? undefined : { opacity: 1, x: 0 }}
+                viewport={{ once: true, amount: 0.25 }}
+                transition={{
+                  duration: reduceMotion ? 0 : 0.5,
+                  delay: reduceMotion ? 0 : index * 0.1,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+              >
                 <div className="timeline-marker">0{index + 1}</div>
                 <div className="timeline-content">
                   <span className="eyebrow">{item.date}</span>
@@ -491,7 +515,7 @@ function App() {
                     ))}
                   </div>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </motion.section>
@@ -509,15 +533,27 @@ function App() {
           />
 
           <div className="achievement-grid">
-            {achievements.map(([index, title, detail]) => (
-              <div className="achievement-card" key={title}>
+            {achievements.map(([index, title, detail], cardIndex) => (
+              <motion.article
+                className="achievement-card"
+                key={title}
+                initial={reduceMotion ? false : { opacity: 0, y: 16 }}
+                whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
+                whileHover={reduceMotion ? undefined : { y: -4 }}
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{
+                  duration: reduceMotion ? 0 : 0.45,
+                  delay: reduceMotion ? 0 : cardIndex * 0.07,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+              >
                 <span>{index}</span>
                 <div>
                   <h3>{title}</h3>
                   <p>{detail}</p>
                 </div>
                 <ArrowUpRight size={18} />
-              </div>
+              </motion.article>
             ))}
           </div>
 
