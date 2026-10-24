@@ -172,69 +172,136 @@ function App() {
           <div className="hero-orb orb-one" />
           <div className="hero-orb orb-two" />
 
-          <div className="hero-content">
-            <motion.div
-              className="status-pill"
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
+          <div className="hero-layout">
+            <div className="hero-content">
+              <motion.div
+                className="status-pill"
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 }}
+              >
+                <span className="status-dot" />
+                Available for opportunities
+              </motion.div>
+
+              <motion.p
+                className="hero-kicker"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.65 }}
+              >
+                B.Tech Information Technology <span>•</span> India
+              </motion.p>
+
+              <motion.h1
+                initial={{ opacity: 0, y: 32 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.8, duration: 0.8 }}
+              >
+                Building effective,
+                <br />
+                <em>human-centered</em> product experiences.
+              </motion.h1>
+
+              <motion.p
+                className="hero-copy"
+                initial={{ opacity: 0, y: 18 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1 }}
+              >
+                Android Developer <span>•</span> Java Engineer <span>•</span>{" "}
+                Product-minded Builder
+              </motion.p>
+
+              <motion.p
+                className="hero-description"
+                initial={{ opacity: 0, y: 18 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1.15 }}
+              >
+                {profile.shortBio}
+              </motion.p>
+
+              <motion.div
+                className="hero-ctas"
+                initial={{ opacity: 0, y: 18 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1.3 }}
+              >
+                <button
+                  className="button button-primary"
+                  onClick={() => goTo("#projects")}
+                >
+                  View projects <MoveUpRight size={17} />
+                </button>
+                <a
+                  className="button button-secondary"
+                  href={profile.resume}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <Download size={16} /> Download resume
+                </a>
+                <a
+                  className="text-link"
+                  href={profile.github}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <GitBranch size={16} /> GitHub
+                </a>
+              </motion.div>
+
+              <motion.div
+                className="hero-meta"
+                initial={{ opacity: 0, y: 18 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1.4 }}
+              >
+                <div>
+                  <span className="meta-label">Location</span>
+                  <strong>
+                    <MapPin size={14} /> {profile.location}
+                  </strong>
+                </div>
+                <div>
+                  <span className="meta-label">Status</span>
+                  <strong>{profile.availability}</strong>
+                </div>
+              </motion.div>
+            </div>
+
+            <motion.figure
+              className="hero-photo"
+              initial={{ opacity: 0, y: 22, scale: 0.97 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{
+                delay: 0.7,
+                duration: 0.8,
+                ease: [0.22, 1, 0.36, 1],
+              }}
             >
-              <span className="status-dot" />
-              Available for opportunities
-            </motion.div>
-
-            <motion.p className="hero-kicker" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.65 }}>
-              B.Tech Information Technology <span>•</span> India
-            </motion.p>
-
-            <motion.h1 initial={{ opacity: 0, y: 32 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8, duration: 0.8 }}>
-              Building effective,
-              <br />
-              <em>human-centered</em> product experiences.
-            </motion.h1>
-
-            <motion.p className="hero-copy" initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1 }}>
-              Android Developer <span>•</span> Java Engineer <span>•</span> Product-minded Builder
-            </motion.p>
-
-            <motion.p className="hero-description" initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.15 }}>
-              {profile.shortBio}
-            </motion.p>
-
-            <motion.div className="hero-ctas" initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.3 }}>
-              <button className="button button-primary" onClick={() => goTo("#projects")}>
-                View projects <MoveUpRight size={17} />
-              </button>
-              <a className="button button-secondary" href={profile.resume} target="_blank" rel="noreferrer">
-                <Download size={16} /> Download resume
-              </a>
-              <a className="text-link" href={profile.github} target="_blank" rel="noreferrer">
-                <GitBranch size={16} /> GitHub
-              </a>
-            </motion.div>
-
-            <motion.div className="hero-meta" initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.4 }}>
-              <div>
-                <span className="meta-label">Location</span>
-                <strong><MapPin size={14} /> {profile.location}</strong>
+              <span className="photo-corner photo-corner-top" />
+              <span className="photo-corner photo-corner-bottom" />
+              <img
+                src={profilePhoto}
+                alt="Akash Kumar Yadav in a formal suit"
+                fetchPriority="high"
+                decoding="async"
+              />
+              <div className="portrait-badge">
+                <span className="status-dot" />
+                Open to opportunities
               </div>
-              <div>
-                <span className="meta-label">Status</span>
-                <strong>{profile.availability}</strong>
+              <figcaption>
+                <span>{profile.name}</span>
+                <small>ANDROID / JAVA</small>
+              </figcaption>
+              <div className="photo-index">
+                PROFILE <b>01</b>
               </div>
-            </motion.div>
+            </motion.figure>
           </div>
-
-          <motion.figure className="hero-photo" initial={{ opacity: 0, y: 22, scale: 0.97 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ delay: 0.9, duration: 0.8 }}>
-            <span className="photo-corner photo-corner-top" />
-            <span className="photo-corner photo-corner-bottom" />
-            <img src={profilePhoto} alt="Akash Kumar Yadav in a formal suit" />
-            <figcaption>
-              <span>{profile.name}</span>
-              <small>ANDROID / JAVA</small>
-            </figcaption>
-            <div className="photo-index">PORTRAIT <b>01</b></div>
-          </motion.figure>
         </section>
 
         <motion.section id="about" className="section-pad about-section" {...reveal}>
