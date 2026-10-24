@@ -13,7 +13,7 @@ export const profile = {
   shortBio:
     'Information Technology undergraduate building polished Android apps with Kotlin and Jetpack Compose, with hands-on experience in AI-powered products, backend APIs, and practical problem-solving.',
   summary:
-    'Information Technology undergraduate skilled in Android development using Kotlin, Jetpack Compose, MVVM, and Clean Architecture, with hands-on experience building AI-powered applications. Familiar with .NET, ASP.NET Core, REST APIs, databases, data structures, and object-oriented programming. Solved 150+ problems on LeetCode and contributed to campus leadership and hackathon activities.',
+    'I’m an Information Technology undergraduate focused on Android development, building thoughtful mobile experiences with Kotlin and Jetpack Compose. I enjoy turning practical problems into clear, dependable products.',
 };
 
 export const projects = [

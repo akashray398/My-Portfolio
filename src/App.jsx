@@ -1,20 +1,32 @@
 import { useEffect, useMemo, useState } from "react";
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import {
   ArrowUpRight,
   BriefcaseBusiness,
+  Activity,
+  BatteryCharging,
+  CalendarDays,
   Check,
   ChevronRight,
   Code2,
   Command,
   Download,
   ExternalLink,
+  Gamepad2,
   GitBranch,
-  Mail,
+  GraduationCap,
+  Heart,
   MapPin,
+  Network,
+  Mail,
   Menu,
   MoveUpRight,
+  Phone,
+  Search,
+  ShieldCheck,
+  Smartphone,
   Sparkles,
+  Wifi,
   Terminal,
   X,
 } from "lucide-react";
@@ -28,7 +40,7 @@ import {
   projects,
   skillGroups,
 } from "./data/site";
-import profilePhoto from "./assets/Professional .jpeg";
+import profilePhoto from "./assets/profile-photo.png";
 import "./App.css";
 
 const navItems = [
@@ -48,6 +60,7 @@ function App() {
   const [activeSkill, setActiveSkill] = useState("Android");
   const [isLoaded, setIsLoaded] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const reduceMotion = useReducedMotion();
 
   useEffect(() => {
     const timer = setTimeout(() => setIsLoaded(true), 350);
@@ -114,10 +127,10 @@ function App() {
   };
 
   const reveal = {
-    initial: { opacity: 0, y: 24 },
-    whileInView: { opacity: 1, y: 0 },
+    initial: reduceMotion ? false : { opacity: 0, y: 24 },
+    whileInView: reduceMotion ? undefined : { opacity: 1, y: 0 },
     viewport: { once: true, amount: 0.2 },
-    transition: { duration: 0.65, ease: [0.22, 1, 0.36, 1] },
+    transition: { duration: reduceMotion ? 0 : 0.65, ease: [0.22, 1, 0.36, 1] },
   };
 
   return (
@@ -285,7 +298,7 @@ function App() {
               <span className="photo-corner photo-corner-bottom" />
               <img
                 src={profilePhoto}
-                alt="Akash Kumar Yadav in a formal suit"
+                alt="Professional headshot of Akash Kumar Yadav in a suit and tie"
                 fetchPriority="high"
                 decoding="async"
               />
@@ -319,25 +332,32 @@ function App() {
           <div className="about-grid">
             <div className="about-copy">
               <p className="lead">{profile.summary}</p>
-              <p>
-                I’m currently pursuing a B.Tech in Information Technology at Chandigarh Engineering College. I enjoy building Android products with Kotlin and Jetpack Compose, and expanding my engineering range through backend APIs, databases, and .NET.
-              </p>
-              <p>
-                I bring a strong problem-solving foundation, a product-focused approach to UI, and experience supporting campus placement and hackathon activities.
-              </p>
             </div>
 
             <div className="metrics">
               {[
-                ["8.04 / 10", "Current CGPA"],
-                ["150+", "LeetCode problems"],
-                ["Android", "Core focus"],
-                ["2027", "Graduation year"],
-              ].map(([value, label]) => (
-                <div className="metric" key={label}>
-                  <strong>{value}</strong>
-                  <span>{label}</span>
-                </div>
+                { value: "8.04", unit: "/ 10", label: "CGPA", icon: GraduationCap },
+                { value: "150+", unit: "", label: "LeetCode problems", icon: Code2 },
+                { value: "Android", unit: "", label: "Primary focus", icon: Smartphone },
+                { value: "2027", unit: "", label: "Graduation year", icon: CalendarDays },
+              ].map(({ value, unit, label, icon: MetricIcon }, index) => (
+                <motion.article
+                  className="metric"
+                  key={label}
+                  initial={reduceMotion ? false : { opacity: 0, y: 16 }}
+                  whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
+                  whileHover={reduceMotion ? undefined : { y: -4 }}
+                  viewport={{ once: true, amount: 0.35 }}
+                  transition={{
+                    duration: reduceMotion ? 0 : 0.45,
+                    delay: reduceMotion ? 0 : index * 0.08,
+                    ease: [0.22, 1, 0.36, 1],
+                  }}
+                >
+                  <span className="metric-icon"><MetricIcon size={17} aria-hidden="true" /></span>
+                  <strong>{value}<small>{unit}</small></strong>
+                  <span className="metric-label">{label}</span>
+                </motion.article>
               ))}
             </div>
           </div>
@@ -507,19 +527,30 @@ function App() {
               <p>Continuously learning by doing.</p>
             </div>
 
-            {certifications.map(([title, issuer, topic]) => (
-              <div className="cert-card" key={title}>
+            {certifications.map(([title, issuer, topic], index) => (
+              <motion.article
+                className="cert-card"
+                key={title}
+                initial={reduceMotion ? false : { opacity: 0, y: 14 }}
+                whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
+                whileHover={reduceMotion ? undefined : { y: -3 }}
+                viewport={{ once: true, amount: 0.35 }}
+                transition={{
+                  duration: reduceMotion ? 0 : 0.42,
+                  delay: reduceMotion ? 0 : index * 0.1,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+              >
                 <div className="cert-icon">
                   <Check size={17} />
                 </div>
-                <div>
+                <div className="cert-card-copy">
                   <h3>{title}</h3>
                   <p>
                     {issuer} <span>·</span> {topic}
                   </p>
                 </div>
-                <ExternalLink size={15} />
-              </div>
+              </motion.article>
             ))}
           </div>
           <div className="career-interests">
@@ -642,15 +673,18 @@ function SectionIntro({ eyebrow, title, trailing }) {
 }
 
 function ProjectCard({ project, index, onOpen }) {
+  const reduceMotion = useReducedMotion();
+
   return (
     <motion.article
       className={`project-card project-card-grid accent-${project.accent}`}
-      initial={{ opacity: 0, y: 28 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={reduceMotion ? false : { opacity: 0, y: 20 }}
+      whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
+      whileHover={reduceMotion ? undefined : { y: -5, scale: 1.01 }}
       viewport={{ once: true, amount: 0.16 }}
       transition={{
-        duration: 0.55,
-        delay: (index % 2) * 0.1,
+        duration: reduceMotion ? 0 : 0.45,
+        delay: (index % 3) * 0.075,
         ease: [0.22, 1, 0.36, 1],
       }}
     >
@@ -669,7 +703,10 @@ function ProjectCard({ project, index, onOpen }) {
         <p>{project.description}</p>
         <p className="project-impact">{project.impact}</p>
         <ul className="project-tags" aria-label={`${project.title} technologies`}>
-          {project.tags.map((tag) => <li key={tag}>{tag}</li>)}
+          {project.tags.slice(0, 4).map((tag) => <li key={tag}>{tag}</li>)}
+          {project.tags.length > 4 && (
+            <li className="project-tag-more">+{project.tags.length - 4}</li>
+          )}
         </ul>
         <div className="project-actions">
           <button className="button button-small button-primary" onClick={onOpen}>
@@ -708,35 +745,113 @@ function ProjectCard({ project, index, onOpen }) {
 }
 
 function ProjectPreview({ project }) {
-  return (
-    <div className={`project-preview project-preview-${project.id}`} aria-hidden="true">
-      <div className="preview-glow" />
-      <div className="preview-orbit preview-orbit-one" />
-      <div className="preview-orbit preview-orbit-two" />
-      <div className="preview-panel">
-        <div className="preview-panel-top">
-          <span className="preview-live-dot" />
-          <span>PROJECT / {project.index}</span>
-          <Sparkles size={14} />
+  const previewByProject = {
+    "cognitask-ai": (
+      <div className="project-ui project-ui-productivity">
+        <div className="project-ui-sidebar">
+          <span className="ui-brand-mark"><Sparkles size={12} /></span>
+          <span className="ui-sidebar-active"><Check size={12} /></span>
+          <span><Code2 size={12} /></span>
+          <span><Activity size={12} /></span>
         </div>
-        <span className="preview-label">{project.visualLabel}</span>
-        <strong>{project.visualTitle}</strong>
-        <div className="preview-signal" aria-hidden="true">
-          <i />
-          <i />
-          <i />
-          <i />
-          <i />
-          <i />
-          <i />
-          <i />
-          <i />
-        </div>
-        <div className="preview-panel-foot">
-          <span>{project.visualMetric}</span>
-          <span className="preview-arrow"><ArrowUpRight size={14} /></span>
+        <div className="project-ui-main">
+          <div className="ui-topline"><span>MY WORKSPACE</span><span className="ui-avatar">A</span></div>
+          <div className="ui-title-row"><div><small>MONDAY, 25 OCT</small><strong>Good morning, Akash</strong></div><span className="ui-add">+</span></div>
+          <div className="ui-focus-card">
+            <span className="ui-card-kicker"><Sparkles size={10} /> TODAY'S FOCUS</span>
+            <strong>Make room for deep work.</strong>
+            <div className="ui-progress"><i /></div>
+            <small>3 of 5 tasks complete</small>
+          </div>
+          <div className="ui-task-heading"><b>Priority tasks</b><span>View all</span></div>
+          <div className="ui-task-row"><i className="ui-check-mark">✓</i><span>Review product notes</span><small>09:30</small></div>
+          <div className="ui-task-row"><i /><span>Build analytics view</span><small>11:00</small></div>
         </div>
       </div>
+    ),
+    saafloop: (
+      <div className="project-ui project-ui-saafloop">
+        <div className="ui-map-grid">
+          <span className="ui-road ui-road-one" /><span className="ui-road ui-road-two" />
+          <span className="ui-road ui-road-three" /><span className="ui-road ui-road-four" />
+          <span className="ui-map-park" />
+          <span className="ui-map-pin pin-one"><MapPin size={13} /></span>
+          <span className="ui-map-pin pin-two"><MapPin size={13} /></span>
+          <span className="ui-map-pin pin-three"><MapPin size={13} /></span>
+          <div className="ui-map-label"><span className="ui-map-live" /> NEARBY REPORTS <b>3</b></div>
+        </div>
+        <div className="ui-report-card">
+          <div className="ui-report-photo"><span>COMMUNITY REPORT</span><b>Waste hotspot</b></div>
+          <div className="ui-report-info"><span><MapPin size={10} /> Sector 62 · 0.4 km</span><span className="ui-report-button"><span>View report</span><ChevronRight size={12} /></span></div>
+        </div>
+        <div className="ui-cleanup-pill"><Heart size={11} /> Join a cleanup near you <span>→</span></div>
+      </div>
+    ),
+    pulsemind: (
+      <div className="project-ui project-ui-pulse">
+        <div className="ui-device-header"><div><span className="ui-live-pill"><i /> SYSTEM LIVE</span><strong>Device health</strong></div><span className="ui-device-icon"><Activity size={16} /></span></div>
+        <div className="ui-health-grid">
+          <div className="ui-health-card ui-battery"><BatteryCharging size={13} /><small>BATTERY</small><b>82<span>%</span></b><i><em /></i></div>
+          <div className="ui-health-card ui-network"><Wifi size={13} /><small>NETWORK</small><b>Strong</b><span>Wi-Fi · 5 GHz</span></div>
+          <div className="ui-health-card ui-temperature"><Activity size={13} /><small>THERMAL</small><b>Normal</b><span>34° C</span></div>
+        </div>
+        <div className="ui-activity-card">
+          <div><span>Performance history</span><small>LAST 6 HOURS</small></div>
+          <div className="ui-activity-chart">{[32, 48, 39, 68, 55, 76, 48, 83, 62, 72, 54, 90, 67, 78].map((height, index) => <i key={index} style={{ "--bar-height": `${height}%` }} />)}</div>
+          <div className="ui-chart-labels"><span>08:00</span><span>11:00</span><span>14:00</span></div>
+        </div>
+        <div className="ui-rule-row"><span><ShieldCheck size={12} /> Smart rule active</span><b>Battery saver · 20%</b></div>
+      </div>
+    ),
+    "kontact-plus": (
+      <div className="project-ui project-ui-kontact">
+        <div className="ui-contact-top"><div><small>YOUR PEOPLE</small><strong>Contacts</strong></div><span className="ui-contact-add">+</span></div>
+        <div className="ui-contact-search"><Search size={12} /><span>Search contacts</span><kbd>⌘ K</kbd></div>
+        <div className="ui-contact-feature">
+          <div className="ui-contact-avatar">AS<span /></div>
+          <div className="ui-contact-person"><strong>Ananya Sharma</strong><small>Product Designer · Chandigarh</small><span><i /> In your inner circle</span></div>
+          <span className="ui-contact-favorite"><Heart size={13} /></span>
+        </div>
+        <div className="ui-contact-details"><span><small>PHONE</small><b>+91 98765 01234</b></span><span><small>LAST IN TOUCH</small><b>Yesterday · 4:32 PM</b></span></div>
+        <div className="ui-contact-actions">
+          <span><Phone size={12} /> Call</span><span><Mail size={12} /> Message</span><span><CalendarDays size={12} /> Event</span>
+        </div>
+        <div className="ui-contact-note"><Sparkles size={11} /><span><b>Remember</b> — Design review next week</span></div>
+      </div>
+    ),
+    "gamestore-api": (
+      <div className="project-ui project-ui-gamestore">
+        <div className="ui-api-top"><div className="ui-api-brand"><Gamepad2 size={14} /><b>GAMESTORE</b></div><span className="ui-api-status"><i /> API OPERATIONAL</span></div>
+        <div className="ui-api-title"><small>DEVELOPER CONSOLE / ENDPOINTS</small><strong>Game catalog API</strong></div>
+        <div className="ui-endpoint"><span className="ui-method">GET</span><b>/api/games</b><span>200 OK</span></div>
+        <div className="ui-code-window">
+          <div className="ui-code-head"><span>RESPONSE · JSON</span><span>200 ms</span></div>
+          <pre><span>{"{"}</span>{"\n  "}<i>"items"</i>: [{"\n    "}{"{"} <i>"id"</i>: 1,{"\n      "}<i>"name"</i>: <em>"Stardew Valley"</em>,{"\n      "}<i>"genre"</i>: <em>"Simulation"</em>{"\n    }"}{"\n  "}],{"\n  "}<i>"totalCount"</i>: 24{"\n"}<span>{"}"}</span></pre>
+        </div>
+        <div className="ui-api-foot"><span><Network size={11} /> ASP.NET Core Minimal API</span><span>SQLite · EF Core</span></div>
+      </div>
+    ),
+    androforge: (
+      <div className="project-ui project-ui-androforge">
+        <div className="ui-forge-top"><div className="ui-forge-brand"><span><Terminal size={13} /></span><b>ANDROFORGE</b></div><span className="ui-forge-version">ANDROID LAB / 01</span></div>
+        <div className="ui-forge-heading"><small>PLATFORM EXPLORER</small><strong>Understand the device.</strong><span>Choose an experiment to explore Android APIs.</span></div>
+        <div className="ui-lab-grid">
+          <div className="ui-lab-card lab-sensor"><Activity size={13} /><span><b>Motion sensors</b><small>Accelerometer · Gyroscope</small></span><ChevronRight size={12} /></div>
+          <div className="ui-lab-card lab-battery"><BatteryCharging size={13} /><span><b>Battery & power</b><small>Health · Charging state</small></span><ChevronRight size={12} /></div>
+          <div className="ui-lab-card lab-connect"><Network size={13} /><span><b>Connectivity</b><small>Network · Wi-Fi status</small></span><ChevronRight size={12} /></div>
+        </div>
+        <div className="ui-forge-footer"><span><ShieldCheck size={11} /> Permission-aware experiments</span><span className="ui-forge-open">OPEN LAB <ArrowUpRight size={11} /></span></div>
+      </div>
+    ),
+  };
+
+  return (
+    <div className={`project-preview project-preview-${project.id}`} aria-hidden="true">
+      <div className="preview-ambient" />
+      <div className="project-preview-device">
+        {previewByProject[project.id] ?? <div className="project-ui-fallback">{project.visualTitle}</div>}
+      </div>
+      <span className="preview-caption"><span className="preview-caption-dot" /> PROJECT UI CONCEPT</span>
     </div>
   );
 }
