@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import {
   ArrowUpRight,
@@ -11,6 +11,7 @@ import {
   ExternalLink,
   GitBranch,
   Mail,
+  MapPin,
   Menu,
   MoveUpRight,
   Sparkles,
@@ -19,7 +20,9 @@ import {
 } from "lucide-react";
 import {
   achievements,
+  careerInterests,
   certifications,
+  education,
   experience,
   profile,
   projects,
@@ -28,6 +31,16 @@ import {
 import profilePhoto from "./assets/Professional .jpeg";
 import "./App.css";
 
+const navItems = [
+  ["About", "#about"],
+  ["Education", "#education"],
+  ["Skills", "#skills"],
+  ["Projects", "#projects"],
+  ["Experience", "#experience"],
+  ["Achievements", "#achievements"],
+  ["Contact", "#contact"],
+];
+
 function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeProject, setActiveProject] = useState(null);
@@ -35,14 +48,13 @@ function App() {
   const [activeSkill, setActiveSkill] = useState("Android");
   const [isLoaded, setIsLoaded] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [formSent, setFormSent] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => setIsLoaded(true), 500);
+    const timer = setTimeout(() => setIsLoaded(true), 350);
+
     const onScroll = () => {
-      setScrolled(window.scrollY > 30);
-      const maxScroll =
-        document.documentElement.scrollHeight - window.innerHeight;
+      setScrolled(window.scrollY > 24);
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
       document
         .querySelector(".scroll-progress")
         ?.style.setProperty(
@@ -50,29 +62,31 @@ function App() {
           `scaleX(${maxScroll ? window.scrollY / maxScroll : 0})`,
         );
     };
+
     const onKeyDown = (event) => {
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
         event.preventDefault();
         setPaletteOpen(true);
       }
-      if (!event.ctrlKey && !event.metaKey && event.key.toLowerCase() === "g")
+      if (!event.ctrlKey && !event.metaKey && event.key.toLowerCase() === "g") {
         window.open(profile.github, "_blank", "noopener,noreferrer");
-      if (!event.ctrlKey && !event.metaKey && event.key.toLowerCase() === "r")
-        document
-          .querySelector("#contact")
-          ?.scrollIntoView({ behavior: "smooth" });
-      if (!event.ctrlKey && !event.metaKey && event.key.toLowerCase() === "p")
-        document
-          .querySelector("#projects")
-          ?.scrollIntoView({ behavior: "smooth" });
+      }
+      if (!event.ctrlKey && !event.metaKey && event.key.toLowerCase() === "r") {
+        document.querySelector("#contact")?.scrollIntoView({ behavior: "smooth" });
+      }
+      if (!event.ctrlKey && !event.metaKey && event.key.toLowerCase() === "p") {
+        document.querySelector("#projects")?.scrollIntoView({ behavior: "smooth" });
+      }
       if (event.key === "Escape") {
         setPaletteOpen(false);
         setActiveProject(null);
         setMenuOpen(false);
       }
     };
+
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("keydown", onKeyDown);
+
     return () => {
       clearTimeout(timer);
       window.removeEventListener("scroll", onScroll);
@@ -80,14 +94,27 @@ function App() {
     };
   }, []);
 
-  if (window.location.pathname !== "/") return <NotFound />;
+  const contactAction = useMemo(() => {
+    const email = profile.contactEmail || profile.email;
+    return `https://formsubmit.co/${email}`;
+  }, []);
+
+  const thankYouPath = useMemo(() => {
+    if (typeof window === "undefined") return "/thanks.html";
+    return `${window.location.origin}/thanks.html`;
+  }, []);
+
+  if (typeof window !== "undefined" && window.location.pathname !== "/") {
+    return <NotFound />;
+  }
 
   const goTo = (id) => {
     setMenuOpen(false);
     document.querySelector(id)?.scrollIntoView({ behavior: "smooth" });
   };
+
   const reveal = {
-    initial: { opacity: 0, y: 28 },
+    initial: { opacity: 0, y: 24 },
     whileInView: { opacity: 1, y: 0 },
     viewport: { once: true, amount: 0.2 },
     transition: { duration: 0.65, ease: [0.22, 1, 0.36, 1] },
@@ -97,53 +124,40 @@ function App() {
     <div className="site-shell">
       <AnimatePresence>
         {!isLoaded && (
-          <motion.div
-            className="loader"
-            initial={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
+          <motion.div className="loader" initial={{ opacity: 1 }} exit={{ opacity: 0 }}>
             <span>{profile.brand}</span>
             <small>INITIALIZING / 2026</small>
           </motion.div>
         )}
       </AnimatePresence>
+
       <div className="scroll-progress" />
+
       <header className={`navbar ${scrolled ? "navbar-scrolled" : ""}`}>
-        <button
-          className="brand"
-          onClick={() => goTo("#top")}
-          aria-label="Back to top"
-        >
+        <button className="brand" onClick={() => goTo("#top")} aria-label="Back to top">
           <span className="brand-mark">A</span>
           {profile.brand}
         </button>
-        <nav
-          className={menuOpen ? "nav-links nav-links-open" : "nav-links"}
-          aria-label="Main navigation"
-        >
-          {[
-            ["About", "#about"],
-            ["Skills", "#skills"],
-            ["Projects", "#projects"],
-            ["Experience", "#experience"],
-            ["Achievements", "#achievements"],
-            ["Contact", "#contact"],
-          ].map(([label, id]) => (
+
+        <nav className={menuOpen ? "nav-links nav-links-open" : "nav-links"} aria-label="Main navigation">
+          {navItems.map(([label, id]) => (
             <button key={id} onClick={() => goTo(id)}>
               {label}
             </button>
           ))}
         </nav>
+
         <div className="nav-actions">
-          <button className="key-button" onClick={() => setPaletteOpen(true)}>
-            <Command size={14} />K
+          <button className="key-button" onClick={() => setPaletteOpen(true)} aria-label="Open command palette">
+            <Command size={14} />
+            <span>K</span>
           </button>
-          <a className="resume-button" href={profile.resume}>
+          <a className="resume-button" href={profile.resume} target="_blank" rel="noreferrer">
             Resume <ArrowUpRight size={15} />
           </a>
           <button
             className="menu-button"
-            onClick={() => setMenuOpen(!menuOpen)}
+            onClick={() => setMenuOpen((open) => !open)}
             aria-label="Toggle menu"
             aria-expanded={menuOpen}
           >
@@ -157,159 +171,101 @@ function App() {
           <div className="hero-grid" />
           <div className="hero-orb orb-one" />
           <div className="hero-orb orb-two" />
+
           <div className="hero-content">
             <motion.div
               className="status-pill"
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.65 }}
+              transition={{ delay: 0.5 }}
             >
-              <span className="status-dot" /> Open to opportunities
+              <span className="status-dot" />
+              Available for opportunities
             </motion.div>
-            <motion.p
-              className="hero-kicker"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.8 }}
-            >
+
+            <motion.p className="hero-kicker" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.65 }}>
               B.Tech Information Technology <span>•</span> India
             </motion.p>
-            <motion.h1
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.9, duration: 0.8 }}
-            >
-              I build clean,
+
+            <motion.h1 initial={{ opacity: 0, y: 32 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8, duration: 0.8 }}>
+              Building effective,
               <br />
-              <em>scalable</em> digital experiences.
+              <em>human-centered</em> product experiences.
             </motion.h1>
-            <motion.p
-              className="hero-copy"
-              initial={{ opacity: 0, y: 18 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.15 }}
-            >
-              Android Developer <span>•</span> Java Developer
+
+            <motion.p className="hero-copy" initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1 }}>
+              Android Developer <span>•</span> Java Engineer <span>•</span> Product-minded Builder
             </motion.p>
-            <motion.p
-              className="hero-description"
-              initial={{ opacity: 0, y: 18 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.25 }}
-            >
-              Focused on building modern Android applications and practical
-              software solutions with strong programming and problem-solving
-              fundamentals.
+
+            <motion.p className="hero-description" initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.15 }}>
+              {profile.shortBio}
             </motion.p>
-            <motion.div
-              className="hero-ctas"
-              initial={{ opacity: 0, y: 18 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.4 }}
-            >
-              <button
-                className="button button-primary"
-                onClick={() => goTo("#projects")}
-              >
+
+            <motion.div className="hero-ctas" initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.3 }}>
+              <button className="button button-primary" onClick={() => goTo("#projects")}>
                 View projects <MoveUpRight size={17} />
               </button>
-              <a className="button button-quiet" href={profile.resume}>
+              <a className="button button-secondary" href={profile.resume} target="_blank" rel="noreferrer">
                 <Download size={16} /> Download resume
               </a>
-              <a
-                className="text-link"
-                href={profile.github}
-                target="_blank"
-                rel="noreferrer"
-              >
+              <a className="text-link" href={profile.github} target="_blank" rel="noreferrer">
                 <GitBranch size={16} /> GitHub
               </a>
             </motion.div>
+
+            <motion.div className="hero-meta" initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.4 }}>
+              <div>
+                <span className="meta-label">Location</span>
+                <strong><MapPin size={14} /> {profile.location}</strong>
+              </div>
+              <div>
+                <span className="meta-label">Status</span>
+                <strong>{profile.availability}</strong>
+              </div>
+            </motion.div>
           </div>
-          <motion.figure
-            className="hero-photo"
-            initial={{ opacity: 0, y: 24, scale: 0.97 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ delay: 1.05, duration: 0.8 }}
-          >
+
+          <motion.figure className="hero-photo" initial={{ opacity: 0, y: 22, scale: 0.97 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ delay: 0.9, duration: 0.8 }}>
             <span className="photo-corner photo-corner-top" />
             <span className="photo-corner photo-corner-bottom" />
             <img src={profilePhoto} alt="Akash Kumar Yadav in a formal suit" />
             <figcaption>
-              <span>AKASH KUMAR YADAV</span>
+              <span>{profile.name}</span>
               <small>ANDROID / JAVA</small>
             </figcaption>
             <div className="photo-index">PORTRAIT <b>01</b></div>
           </motion.figure>
-          <div className="hero-foot">
-            <span>SCROLL TO EXPLORE</span>
-            <span className="scroll-line" />
-            <span>01 — 07</span>
-          </div>
-          <div className="hero-terminal">
-            <div className="terminal-head">
-              <span />
-              <span />
-              <span />
-              <small>akash@dev ~</small>
-            </div>
-            <div className="terminal-body">
-              <p>
-                <b>$</b> whoami
-              </p>
-              <strong>akash.dev</strong>
-              <p>
-                <b>$</b> focus
-              </p>
-              <strong>Android · Kotlin · Java</strong>
-              <p>
-                <b>$</b> status
-              </p>
-              <strong className="terminal-live">
-                Building<span>_</span>
-              </strong>
-            </div>
-          </div>
         </section>
 
-        <motion.section
-          id="about"
-          className="section-pad about-section"
-          {...reveal}
-        >
+        <motion.section id="about" className="section-pad about-section" {...reveal}>
           <SectionIntro
             eyebrow="About me"
             title={
               <>
-                Turning ideas into
+                I turn ideas into
                 <br />
-                <em>useful software.</em>
+                <em>usable software</em>
               </>
             }
           />
+
           <div className="about-grid">
             <div className="about-copy">
-              <p className="lead">
-                I'm Akash Kumar Yadav, a B.Tech Information Technology student
-                focused on Android and Java development.
+              <p className="lead">{profile.summary}</p>
+              <p>
+                I’m currently pursuing a B.Tech in Information Technology at Chandigarh Engineering College. I enjoy building Android products with Kotlin and Jetpack Compose, and expanding my engineering range through backend APIs, databases, and .NET.
               </p>
               <p>
-                I enjoy building practical applications, exploring modern
-                development technologies, and continuously improving my
-                problem-solving and software engineering skills.
-              </p>
-              <p>
-                My primary focus is Android development with Kotlin and Java,
-                while also having hands-on exposure to web development,
-                databases, backend technologies and .NET.
+                I bring a strong problem-solving foundation, a product-focused approach to UI, and experience supporting campus placement and hackathon activities.
               </p>
             </div>
+
             <div className="metrics">
               {[
-                ["8.05", "CGPA"],
-                ["Android", "Primary focus"],
-                ["Java", "Core language"],
-                ["DSA", "Problem solving"],
+                ["8.04 / 10", "Current CGPA"],
+                ["150+", "LeetCode problems"],
+                ["Android", "Core focus"],
+                ["2027", "Graduation year"],
               ].map(([value, label]) => (
                 <div className="metric" key={label}>
                   <strong>{value}</strong>
@@ -320,117 +276,122 @@ function App() {
           </div>
         </motion.section>
 
-        <motion.section
-          id="skills"
-          className="section-pad skills-section"
-          {...reveal}
-        >
+        <motion.section id="education" className="section-pad education-section" {...reveal}>
+          <SectionIntro
+            eyebrow="Education"
+            title={
+              <>
+                Learning with
+                <br />
+                <em>strong foundations</em>
+              </>
+            }
+          />
+          <div className="education-grid">
+            {education.map((item) => (
+              <article className="education-card" key={`${item.qualification}-${item.institution}`}>
+                <span className="eyebrow">{item.date}</span>
+                <h3>{item.qualification}</h3>
+                <p className="education-subject">{item.subject}</p>
+                <p>{item.institution}</p>
+                <strong>{item.result}</strong>
+              </article>
+            ))}
+          </div>
+        </motion.section>
+
+        <motion.section id="skills" className="section-pad skills-section" {...reveal}>
           <SectionIntro
             eyebrow="Tech stack"
             title={
               <>
-                Tools for turning
+                Tools for building
                 <br />
-                <em>thought into form.</em>
+                <em>clear digital products</em>
               </>
             }
           />
+
           <div className="skills-layout">
-            <div className="skill-tabs">
+            <div className="skill-tabs" role="tablist" aria-label="Skill groups">
               {Object.keys(skillGroups).map((group, index) => (
                 <button
-                  className={
-                    activeSkill === group ? "skill-tab active" : "skill-tab"
-                  }
                   key={group}
+                  className={activeSkill === group ? "skill-tab active" : "skill-tab"}
                   onClick={() => setActiveSkill(group)}
+                  role="tab"
+                  aria-selected={activeSkill === group}
                 >
                   <span>0{index + 1}</span>
                   {group}
-                  <ChevronRight size={16} />
+                  <ChevronRight size={15} />
                 </button>
               ))}
             </div>
-            <div className="skill-display">
+
+            <div className="skill-display" role="tabpanel" aria-live="polite">
               <div className="skill-display-head">
-                <span>Currently exploring</span>
-                <span className="skill-count">
-                  {skillGroups[activeSkill].length} technologies
-                </span>
+                <span>Core capabilities</span>
+                <span className="skill-count">{skillGroups[activeSkill].length} tools</span>
               </div>
+
               <div className="skill-cloud">
                 {skillGroups[activeSkill].map((skill, index) => (
-                  <motion.div
-                    className="skill-chip"
-                    key={skill}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.035 }}
-                  >
-                    <Code2 size={16} />
+                  <motion.div className="skill-chip" key={skill} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.03 }}>
+                    <Code2 size={15} />
                     {skill}
                   </motion.div>
                 ))}
               </div>
+
               <div className="skill-note">
-                <Sparkles size={16} /> Primary specialization: Android, Kotlin &
-                Java
+                <Sparkles size={16} />
+                Career interests: Android development, mobile engineering, Generative AI, and AI agents.
               </div>
             </div>
           </div>
         </motion.section>
 
-        <motion.section
-          id="projects"
-          className="section-pad projects-section"
-          {...reveal}
-        >
+        <motion.section id="projects" className="section-pad projects-section" {...reveal}>
           <SectionIntro
-            eyebrow="Selected work"
+            eyebrow="Selected projects"
             title={
               <>
-                A few things I've
+                Six projects.
                 <br />
-                <em>made real.</em>
+                <em>Built with purpose.</em>
               </>
             }
-            trailing="A selection of applications and products I've built."
+            trailing="Android apps, developer tools, and a full-stack API—each grounded in a real problem and an intentional build."
           />
-          <div className="project-list">
-            {projects
-              .slice()
-              .sort((firstProject, secondProject) =>
-                firstProject.index.localeCompare(secondProject.index),
-              )
-              .map((project, index) => (
+
+          <div className="project-list" aria-label="Selected projects">
+            {projects.map((project, index) => (
               <ProjectCard
                 key={project.id}
                 project={project}
-                featured={index === 0}
+                index={index}
                 onOpen={() => setActiveProject(project)}
               />
             ))}
           </div>
         </motion.section>
 
-        <motion.section
-          id="experience"
-          className="section-pad experience-section"
-          {...reveal}
-        >
+        <motion.section id="experience" className="section-pad experience-section" {...reveal}>
           <SectionIntro
-            eyebrow="Experience & training"
+            eyebrow="Experience"
             title={
               <>
-                Learning by
+                Learning through
                 <br />
-                <em>building.</em>
+                <em>hands-on building</em>
               </>
             }
           />
+
           <div className="timeline">
             {experience.map((item, index) => (
-              <div className="timeline-item" key={item.title}>
+              <div className="timeline-item" key={`${item.title}-${item.company}`}>
                 <div className="timeline-marker">0{index + 1}</div>
                 <div className="timeline-content">
                   <span className="eyebrow">{item.date}</span>
@@ -448,21 +409,18 @@ function App() {
           </div>
         </motion.section>
 
-        <motion.section
-          id="achievements"
-          className="section-pad achievements-section"
-          {...reveal}
-        >
+        <motion.section id="achievements" className="section-pad achievements-section" {...reveal}>
           <SectionIntro
             eyebrow="Milestones"
             title={
               <>
-                Small moments,
+                Small wins,
                 <br />
-                <em>real momentum.</em>
+                <em>steady momentum</em>
               </>
             }
           />
+
           <div className="achievement-grid">
             {achievements.map(([index, title, detail]) => (
               <div className="achievement-card" key={title}>
@@ -475,11 +433,13 @@ function App() {
               </div>
             ))}
           </div>
+
           <div className="certifications">
             <div className="certification-heading">
               <span className="eyebrow">Certifications</span>
-              <p>Curious by default.</p>
+              <p>Continuously learning by doing.</p>
             </div>
+
             {certifications.map(([title, issuer, topic]) => (
               <div className="cert-card" key={title}>
                 <div className="cert-icon">
@@ -495,25 +455,27 @@ function App() {
               </div>
             ))}
           </div>
+          <div className="career-interests">
+            <span className="eyebrow">Career interests</span>
+            <div className="tag-row">
+              {careerInterests.map((interest) => <span key={interest}>{interest}</span>)}
+            </div>
+          </div>
         </motion.section>
 
-        <motion.section
-          id="contact"
-          className="section-pad contact-section"
-          {...reveal}
-        >
+        <motion.section id="contact" className="section-pad contact-section" {...reveal}>
           <div className="contact-heading">
             <span className="eyebrow">Get in touch</span>
             <h2>
-              Let's build
+              Let’s build
               <br />
-              <em>something.</em>
+              <em>something useful.</em>
             </h2>
             <p>
-              Have an opportunity, project, or idea?
-              <br />
-              Let's connect.
+              I’m open to product, Android, Java, and frontend opportunities where clear thinking,
+              execution, and user experience matter.
             </p>
+
             <div className="contact-links">
               <a href={`mailto:${profile.email}`}>
                 <Mail size={17} /> Email me
@@ -524,44 +486,39 @@ function App() {
               <a href={profile.github} target="_blank" rel="noreferrer">
                 <GitBranch size={17} /> GitHub
               </a>
+              <a href={profile.leetcode} target="_blank" rel="noreferrer">
+                <Code2 size={17} /> LeetCode
+              </a>
             </div>
           </div>
-          <form
-            className="contact-form"
-            onSubmit={(event) => {
-              event.preventDefault();
-              setFormSent(true);
-            }}
-          >
+
+          <form className="contact-form" action={contactAction} method="POST">
+            <input type="hidden" name="_captcha" value="false" />
+            <input type="hidden" name="_template" value="table" />
+            <input type="hidden" name="_subject" value="Portfolio inquiry from Akash Kumar Yadav" />
+            <input type="hidden" name="_next" value={thankYouPath} />
+
             <label>
               Name
               <input required name="name" placeholder="Your name" />
             </label>
+
             <label>
               Email
-              <input
-                required
-                type="email"
-                name="email"
-                placeholder="you@example.com"
-              />
+              <input required type="email" name="email" placeholder="you@example.com" />
             </label>
+
             <label>
               Message
-              <textarea
-                required
-                name="message"
-                rows="4"
-                placeholder="Tell me a little about your idea..."
-              />
+              <textarea required name="message" rows="5" placeholder="Tell me a little about your idea or opportunity..." />
             </label>
+
             <button className="button button-primary" type="submit">
-              {formSent ? "Message ready to send" : "Send message"}{" "}
-              <ArrowUpRight size={17} />
+              Send message <ArrowUpRight size={17} />
             </button>
+
             <small>
-              This form is UI-only for now. Connect it to your preferred email
-              service before launch.
+              This form sends messages to {profile.email} through FormSubmit.
             </small>
           </form>
         </motion.section>
@@ -574,43 +531,33 @@ function App() {
             {profile.brand}
           </button>
           <p>
-            Android Developer <span>•</span> Java Developer
+            Android Developer <span>•</span> Java Engineer
           </p>
         </div>
+
         <div className="footer-links">
-          <a href={profile.github} target="_blank" rel="noreferrer">
-            GitHub
-          </a>
-          <a href={profile.linkedin} target="_blank" rel="noreferrer">
-            LinkedIn
-          </a>
+          <a href={profile.github} target="_blank" rel="noreferrer">GitHub</a>
+          <a href={profile.linkedin} target="_blank" rel="noreferrer">LinkedIn</a>
           <a href={`mailto:${profile.email}`}>Email</a>
+          <a href={profile.leetcode} target="_blank" rel="noreferrer">LeetCode</a>
         </div>
-        <button
-          className="back-top"
-          onClick={() => goTo("#top")}
-          aria-label="Back to top"
-        >
+
+        <button className="back-top" onClick={() => goTo("#top")} aria-label="Back to top">
           <ArrowUpRight size={18} />
         </button>
+
         <small>
-          © 2026 Akash Kumar Yadav
+          © 2026 {profile.name}
           <br />
-          Built with React
+          Built with React & Vite
         </small>
       </footer>
 
       <AnimatePresence>
-        {activeProject && (
-          <ProjectModal
-            project={activeProject}
-            onClose={() => setActiveProject(null)}
-          />
-        )}
+        {activeProject && <ProjectModal project={activeProject} onClose={() => setActiveProject(null)} />}
       </AnimatePresence>
-      {paletteOpen && (
-        <CommandPalette onClose={() => setPaletteOpen(false)} goTo={goTo} />
-      )}
+
+      {paletteOpen && <CommandPalette onClose={() => setPaletteOpen(false)} goTo={goTo} />}
     </div>
   );
 }
@@ -627,154 +574,101 @@ function SectionIntro({ eyebrow, title, trailing }) {
   );
 }
 
-function ProjectCard({ project, featured, onOpen }) {
+function ProjectCard({ project, index, onOpen }) {
   return (
-    <article
-      className={`project-card ${featured ? "project-featured" : ""} accent-${project.accent}`}
+    <motion.article
+      className={`project-card project-card-grid accent-${project.accent}`}
+      initial={{ opacity: 0, y: 28 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.16 }}
+      transition={{
+        duration: 0.55,
+        delay: (index % 2) * 0.1,
+        ease: [0.22, 1, 0.36, 1],
+      }}
     >
+      <ProjectPreview project={project} />
       <div className="project-info">
-        <span className="project-number">
-          {project.index} / {project.label}
-        </span>
+        <div className="project-card-heading">
+          <span className="project-number">{project.index} / {project.label}</span>
+          {project.privateRepo ? (
+            <span className="project-visibility">Private repo</span>
+          ) : (
+            <span className="project-visibility">Open source</span>
+          )}
+        </div>
         <span className="eyebrow">{project.eyebrow}</span>
         <h3>{project.title}</h3>
         <p>{project.description}</p>
-        <div className="tag-row">
-          {project.tags.map((tag) => (
-            <span key={tag}>{tag}</span>
-          ))}
-        </div>
+        <p className="project-impact">{project.impact}</p>
+        <ul className="project-tags" aria-label={`${project.title} technologies`}>
+          {project.tags.map((tag) => <li key={tag}>{tag}</li>)}
+        </ul>
         <div className="project-actions">
-          <button
-            className="button button-small button-primary"
-            onClick={onOpen}
-          >
+          <button className="button button-small button-primary" onClick={onOpen}>
             View details <ArrowUpRight size={15} />
           </button>
-          <a
-            className="icon-link"
-            href={project.github || profile.github}
-            target="_blank"
-            rel="noreferrer"
-            aria-label={`${project.title} GitHub`}
-          >
-            <GitBranch size={17} />
-          </a>
+          {project.privateRepo ? (
+            <span className="project-private-note">Repository is private</span>
+          ) : (
+            <a
+              className="project-source-link"
+              href={project.github}
+              target="_blank"
+              rel="noreferrer"
+              aria-label={`View ${project.title} on GitHub`}
+            >
+              <GitBranch size={16} />
+              Source
+              <ExternalLink size={13} />
+            </a>
+          )}
+          {project.liveDemo && (
+            <a
+              className="project-source-link project-demo-link"
+              href={project.liveDemo}
+              target="_blank"
+              rel="noreferrer"
+              aria-label={`Open ${project.title} project page`}
+            >
+              Project page <ExternalLink size={13} />
+            </a>
+          )}
         </div>
       </div>
-      <ProjectPreview project={project} />
-    </article>
+    </motion.article>
   );
 }
 
 function ProjectPreview({ project }) {
-  if (project.id === "coffee-cafe")
-    return (
-      <div className="preview-browser">
-        <div className="browser-bar">
-          <span />
-          <span />
-          <span />
-          <b>coffee.cafe</b>
-        </div>
-        <div className="coffee-preview">
-          <small>EST. 2024</small>
-          <strong>
-            Good coffee,
-            <br />
-            <i>good days.</i>
-          </strong>
-          <div className="coffee-cup">☕</div>
-          <span>
-            EXPLORE MENU <ArrowUpRight size={13} />
-          </span>
-        </div>
-      </div>
-    );
-  if (project.id === "nexora-ai")
-    return (
-      <div className="preview-nexora">
-        <div className="nexora-orbit orbit-a" />
-        <div className="nexora-orbit orbit-b" />
-        <div className="nexora-core"><Sparkles size={24} /></div>
-        <span className="nexora-label">ECHO MIND</span>
-        <div className="nexora-wave"><i /><i /><i /><i /><i /><i /><i /></div>
-        <small>VOICE ASSISTANT / READY</small>
-      </div>
-    );
-  if (project.id === "kontakt-plus")
-    return (
-      <div className="preview-kontakt">
-        <div className="kontakt-topbar">
-          <span>My contacts</span>
-          <b>＋</b>
-        </div>
-        <div className="kontakt-search">⌕ <span>Search contacts</span></div>
-        <div className="kontakt-featured">
-          <div className="kontakt-avatar avatar-main">S</div>
-          <div><strong>Sarah Mitchell</strong><small>Product Designer</small></div>
-          <span className="kontakt-more">•••</span>
-        </div>
-        <small className="kontakt-label">RECENT CONTACTS</small>
-        <div className="kontakt-row"><div className="kontakt-avatar avatar-blue">R</div><span><b>Rahul Sharma</b><small>Last contacted today</small></span><i>☎</i></div>
-        <div className="kontakt-row"><div className="kontakt-avatar avatar-green">A</div><span><b>Ananya Kapoor</b><small>Last contacted yesterday</small></span><i>✉</i></div>
-        <div className="kontakt-ai"><Sparkles size={13} /><span><b>Smart suggestion</b><small>Follow up with Sarah this weekend</small></span></div>
-      </div>
-    );
   return (
-    <div className={`preview-phone ${project.id}`}>
-      <div className="phone-speaker" />
-      <div className="phone-screen">
-        <div className="phone-status">
-          9:41 <span>•••</span>
+    <div className={`project-preview project-preview-${project.id}`} aria-hidden="true">
+      <div className="preview-glow" />
+      <div className="preview-orbit preview-orbit-one" />
+      <div className="preview-orbit preview-orbit-two" />
+      <div className="preview-panel">
+        <div className="preview-panel-top">
+          <span className="preview-live-dot" />
+          <span>PROJECT / {project.index}</span>
+          <Sparkles size={14} />
         </div>
-        {project.id === "knotes" ? (
-          <>
-            <small className="phone-muted">TUESDAY, 14 MAY</small>
-            <h4>
-              Good morning,
-              <br />
-              <b>Akash.</b>
-            </h4>
-            <div className="note-highlight">
-              <span>+ New note</span>
-              <strong>Quick thoughts</strong>
-              <small>Capture what's on your mind.</small>
-            </div>
-            <div className="mini-notes">
-              <i />
-              <i />
-              <i />
-            </div>
-          </>
-        ) : (
-          <>
-            <small className="phone-muted">TOTAL BALANCE</small>
-            <h4 className="balance">
-              ₹ 24,580<b>.00</b>
-            </h4>
-            <div className="wallet-actions">
-              <span>
-                ↗<small>Send</small>
-              </span>
-              <span>
-                ↓<small>Request</small>
-              </span>
-              <span>
-                ＋<small>Add</small>
-              </span>
-            </div>
-            <div className="transaction">
-              <small>RECENT ACTIVITY</small>
-              <p>
-                <b>☕</b> Coffee Cafe <strong>- ₹180</strong>
-              </p>
-              <p>
-                <b>↗</b> Salary credit <strong>+ ₹32,000</strong>
-              </p>
-            </div>
-          </>
-        )}
+        <span className="preview-label">{project.visualLabel}</span>
+        <strong>{project.visualTitle}</strong>
+        <div className="preview-signal" aria-hidden="true">
+          <i />
+          <i />
+          <i />
+          <i />
+          <i />
+          <i />
+          <i />
+          <i />
+          <i />
+        </div>
+        <div className="preview-panel-foot">
+          <span>{project.visualMetric}</span>
+          <span className="preview-arrow"><ArrowUpRight size={14} /></span>
+        </div>
       </div>
     </div>
   );
@@ -791,30 +685,30 @@ function ProjectModal({ project, onClose }) {
     >
       <motion.div
         className="project-modal"
-        initial={{ opacity: 0, y: 30, scale: 0.97 }}
+        initial={{ opacity: 0, y: 28, scale: 0.98 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={{ opacity: 0, y: 20, scale: 0.98 }}
       >
-        <button
-          className="modal-close"
-          onClick={onClose}
-          aria-label="Close project details"
-        >
+        <button className="modal-close" onClick={onClose} aria-label="Close project details">
           <X size={20} />
         </button>
+
         <span className="eyebrow">
           {project.index} / {project.label}
         </span>
         <h2>{project.title}</h2>
         <p className="modal-intro">{project.description}</p>
+
         <div className="modal-grid">
+          <ModalBlock title="Impact" copy={project.impact} />
           <ModalBlock title="Problem" copy={project.problem} />
           <ModalBlock title="Solution" copy={project.solution} />
           <ModalBlock title="Architecture" copy={project.architecture} />
           <ModalBlock title="Challenges" copy={project.challenge} />
           <ModalBlock title="What I learned" copy={project.learned} />
+
           <div>
-            <span className="eyebrow">Features</span>
+            <span className="eyebrow">Key features</span>
             <ul>
               {project.features.map((feature) => (
                 <li key={feature}>
@@ -825,25 +719,31 @@ function ProjectModal({ project, onClose }) {
             </ul>
           </div>
         </div>
+
         <div className="modal-footer">
           <div className="tag-row">
             {project.tags.map((tag) => (
               <span key={tag}>{tag}</span>
             ))}
           </div>
-          <a
-            className="button button-primary"
-            href={project.github || profile.github}
-            target="_blank"
-            rel="noreferrer"
-          >
-            GitHub <ExternalLink size={15} />
-          </a>
+          {project.privateRepo ? (
+            <span className="project-private-note">Private repository</span>
+          ) : (
+            <a className="button button-primary" href={project.github} target="_blank" rel="noreferrer">
+              GitHub <ExternalLink size={15} />
+            </a>
+          )}
+          {project.liveDemo && (
+            <a className="button button-secondary" href={project.liveDemo} target="_blank" rel="noreferrer">
+              Project page <ExternalLink size={15} />
+            </a>
+          )}
         </div>
       </motion.div>
     </motion.div>
   );
 }
+
 function ModalBlock({ title, copy }) {
   return (
     <div>
@@ -852,6 +752,7 @@ function ModalBlock({ title, copy }) {
     </div>
   );
 }
+
 function CommandPalette({ onClose, goTo }) {
   const commands = [
     ["Go to projects", "#projects", "P"],
@@ -859,17 +760,16 @@ function CommandPalette({ onClose, goTo }) {
     ["Go to experience", "#experience", "E"],
     ["Contact Akash", "#contact", "C"],
   ];
+
   return (
-    <div
-      className="palette-backdrop"
-      onMouseDown={(event) => event.target === event.currentTarget && onClose()}
-    >
+    <div className="palette-backdrop" onMouseDown={(event) => event.target === event.currentTarget && onClose()}>
       <div className="command-palette">
         <div className="palette-search">
           <Command size={17} />
           <input autoFocus placeholder="Search portfolio..." />
           <kbd>ESC</kbd>
         </div>
+
         <div className="command-list">
           {commands.map(([label, id, key]) => (
             <button
@@ -886,6 +786,7 @@ function CommandPalette({ onClose, goTo }) {
               <kbd>{key}</kbd>
             </button>
           ))}
+
           <a href={profile.github} target="_blank" rel="noreferrer">
             <span>
               <GitBranch size={15} />
@@ -893,18 +794,27 @@ function CommandPalette({ onClose, goTo }) {
             </span>
             <kbd>G</kbd>
           </a>
+
           <a href={profile.linkedin} target="_blank" rel="noreferrer">
             <span>
               <BriefcaseBusiness size={15} />
               Open LinkedIn
             </span>
           </a>
+          <a href={profile.leetcode} target="_blank" rel="noreferrer">
+            <span>
+              <Code2 size={15} />
+              Open LeetCode
+            </span>
+          </a>
         </div>
+
         <small>Navigate this portfolio with your keyboard</small>
       </div>
     </div>
   );
 }
+
 function NotFound() {
   return (
     <div className="not-found">
@@ -914,7 +824,7 @@ function NotFound() {
       <p>
         Looks like this route
         <br />
-        doesn't exist.
+        doesn’t exist.
       </p>
       <a className="button button-primary" href="/">
         Back home <ArrowUpRight size={16} />

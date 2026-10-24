@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Resume of Akash Kumar Yadav, Android Developer and Information Technology undergraduate." />
+    <title>Akash Kumar Yadav | Resume</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #172033;
+        --muted: #45536a;
+        --accent: #3447ad;
+        --rule: #d8deea;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        background: #e9edf4;
+        color: var(--ink);
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 10.5pt;
+        line-height: 1.45;
+      }
+      .actions {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        display: flex;
+        justify-content: flex-end;
+        padding: 0.75rem max(calc((100vw - 8.5in) / 2), 1rem);
+        background: rgba(233, 237, 244, 0.94);
+        backdrop-filter: blur(10px);
+      }
+      .actions button {
+        border: 0;
+        border-radius: 8px;
+        padding: 0.65rem 0.9rem;
+        background: var(--accent);
+        color: white;
+        font: inherit;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      .page {
+        width: min(8.5in, calc(100% - 2rem));
+        min-height: 11in;
+        margin: 1.5rem auto 2rem;
+        padding: 0.62in 0.68in;
+        background: #fff;
+        box-shadow: 0 14px 50px rgba(21, 33, 55, 0.14);
+      }
+      header {
+        padding-bottom: 0.18in;
+        border-bottom: 2px solid var(--ink);
+      }
+      h1 {
+        margin: 0;
+        font-size: 27pt;
+        line-height: 1.1;
+        letter-spacing: -0.04em;
+      }
+      .headline {
+        margin: 0.08in 0 0;
+        color: var(--accent);
+        font-size: 11pt;
+        font-weight: 700;
+      }
+      .contact {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.05in 0.18in;
+        margin-top: 0.12in;
+        color: var(--muted);
+        font-size: 9.4pt;
+      }
+      a { color: inherit; text-decoration: none; }
+      .contact a { color: var(--accent); }
+      section { margin-top: 0.2in; }
+      h2 {
+        margin: 0 0 0.08in;
+        padding-bottom: 0.035in;
+        border-bottom: 1px solid var(--rule);
+        color: var(--accent);
+        font-size: 10.4pt;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+      p { margin: 0; }
+      .summary { color: var(--muted); }
+      .entry { margin-top: 0.12in; }
+      .entry:first-of-type { margin-top: 0; }
+      .entry-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 0.15in;
+        align-items: baseline;
+      }
+      .entry-head strong { font-size: 10.5pt; }
+      .date {
+        color: var(--muted);
+        white-space: nowrap;
+        font-size: 9pt;
+      }
+      .subline {
+        margin-top: 0.015in;
+        color: var(--muted);
+        font-style: italic;
+      }
+      ul {
+        margin: 0.04in 0 0;
+        padding-left: 0.18in;
+      }
+      li {
+        margin-top: 0.02in;
+        padding-left: 0.02in;
+      }
+      .skill-list { display: grid; gap: 0.04in; }
+      .skill-list p { color: var(--muted); }
+      .skill-list strong { color: var(--ink); }
+      .project a { color: var(--accent); }
+      .achievement-list { display: grid; gap: 0.035in; }
+      .interests { color: var(--muted); }
+      @media (max-width: 640px) {
+        .page {
+          width: 100%;
+          min-height: 0;
+          margin: 0;
+          padding: 1.25rem;
+        }
+        .entry-head { align-items: flex-start; flex-direction: column; gap: 0; }
+        .date { white-space: normal; }
+      }
+      @page { size: letter; margin: 0.45in; }
+      @media print {
+        body { background: white; font-size: 9.3pt; line-height: 1.32; }
+        .actions { display: none; }
+        .page {
+          width: auto;
+          min-height: 0;
+          margin: 0;
+          padding: 0;
+          box-shadow: none;
+        }
+        section { margin-top: 0.14in; }
+        .entry { margin-top: 0.08in; }
+        a { color: inherit; }
+        h2, .entry, li { break-inside: avoid; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="actions">
+      <button type="button" onclick="window.print()">Print / Save as PDF</button>
+    </div>
+    <main class="page">
+      <header>
+        <h1>AKASH KUMAR YADAV</h1>
+        <p class="headline">Android Developer | Kotlin · Jetpack Compose · AI-powered applications</p>
+        <div class="contact">
+          <a href="mailto:akashw6666@gmail.com">akashw6666@gmail.com</a>
+          <a href="https://www.linkedin.com/in/akash-yadav-878906286" target="_blank" rel="noreferrer">LinkedIn</a>
+          <a href="https://github.com/akashray398" target="_blank" rel="noreferrer">GitHub</a>
+          <a href="https://leetcode.com/u/akashray398/" target="_blank" rel="noreferrer">LeetCode</a>
+        </div>
+      </header>
+
+      <section>
+        <h2>Summary</h2>
+        <p class="summary">
+          Information Technology undergraduate skilled in Android development using Kotlin, Jetpack Compose, MVVM, and Clean Architecture, with hands-on experience building AI-powered applications. Familiar with .NET, ASP.NET Core, REST APIs, databases, data structures, and object-oriented programming. Strong problem-solving foundation with 150+ LeetCode problems and experience in campus leadership and hackathon activities.
+        </p>
+      </section>
+
+      <section>
+        <h2>Education</h2>
+        <div class="entry">
+          <div class="entry-head">
+            <strong>Bachelor of Technology (Information Technology) · Chandigarh Engineering College</strong>
+            <span class="date">2023 — 2027</span>
+          </div>
+          <p class="subline">CGPA: 8.04 / 10</p>
+        </div>
+        <div class="entry">
+          <div class="entry-head">
+            <strong>Intermediate (BSEB) · A.S.R.L.S College, Nabiganj Bazar</strong>
+            <span class="date">2020 — 2021</span>
+          </div>
+          <p class="subline">Percentage: 72%</p>
+        </div>
+      </section>
+
+      <section>
+        <h2>Technical Skills</h2>
+        <div class="skill-list">
+          <p><strong>Programming:</strong> Kotlin, Java, C#</p>
+          <p><strong>Android:</strong> Android Studio, Jetpack Compose, XML, Material 3, MVVM, Clean Architecture</p>
+          <p><strong>Backend:</strong> .NET, ASP.NET Core, REST APIs, LINQ, Entity Framework Core</p>
+          <p><strong>Databases:</strong> MySQL, Room Database, Firebase Authentication, DataStore</p>
+          <p><strong>Tools & Testing:</strong> Git, GitHub, VS Code, JUnit, Espresso</p>
+        </div>
+      </section>
+
+      <section>
+        <h2>Experience</h2>
+        <div class="entry">
+          <div class="entry-head">
+            <strong>.NET Developer Trainee · Wipro TalentNext</strong>
+            <span class="date">July 2026 — August 2026</span>
+          </div>
+          <ul>
+            <li>Completed an 8-week hands-on .NET Developer training covering C#, OOP, .NET, ASP.NET Core, LINQ, and Entity Framework Core.</li>
+            <li>Developed practical knowledge of RESTful Web APIs, authentication and authorization, dependency injection, asynchronous programming, exception handling, and database integration.</li>
+            <li>Applied design patterns, unit testing, debugging, and clean coding practices within the .NET development ecosystem.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section>
+        <h2>Projects</h2>
+        <div class="entry project">
+          <div class="entry-head">
+            <strong>CogniTask AI — Smart Note & Task Management App</strong>
+            <span class="date"><a href="https://github.com/akashray398/CogniTask-AI" target="_blank" rel="noreferrer">GitHub</a> · <a href="https://www.cognote.io/feature" target="_blank" rel="noreferrer">Project page</a></span>
+          </div>
+          <ul>
+            <li>Built a responsive Jetpack Compose and Material Design 3 UI using custom state hoisting and hybrid Compose–Fragment navigation.</li>
+            <li>Implemented secure authentication and cloud sync workflows using Firebase Auth, DataStore Preferences, REST APIs, and OkHttp logging.</li>
+            <li>Developed focus-velocity metrics and task-trend analytics using reactive Flow and StateFlow data streams.</li>
+          </ul>
+        </div>
+        <div class="entry project">
+          <div class="entry-head">
+            <strong>Kontact Plus — AI-Enhanced Contact Manager</strong>
+            <span class="date"><a href="https://github.com/akashray398/KontactPlus" target="_blank" rel="noreferrer">GitHub</a></span>
+          </div>
+          <ul>
+            <li>Developed a professional Android contact manager using Kotlin and Material 3 with a modern, responsive interface.</li>
+            <li>Added professional fields, life events, communication history, quick actions, and profile customization.</li>
+            <li>Implemented privacy controls, Intent-based data flow, Activity Result APIs, animations, and vector graphics.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section>
+        <h2>Achievements & Leadership</h2>
+        <ul class="achievement-list">
+          <li>Solved 150+ Data Structures and Algorithms problems on LeetCode.</li>
+          <li>Placement Ambassador, CGC (2025) — Represented students and supported placement initiatives and recruitment drives.</li>
+          <li>Hackathon Final Organizer, CGC — Coordinated activities, participant management, and event execution.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Certifications</h2>
+        <ul>
+          <li>Android Using Kotlin — Infosys</li>
+          <li>Software Programmer — Java — NASSCOM</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Career Interests</h2>
+        <p class="interests">Android Development · Mobile Application Engineering · Generative AI · AI Agents</p>
+      </section>
+    </main>
+  </body>
+</html>
