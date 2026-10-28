@@ -42,6 +42,7 @@ import {
 } from "./data/site";
 import profilePhoto from "./assets/profile-photo.png";
 import "./App.css";
+import "./portfolio-enhancements.css";
 
 const navItems = [
   ["About", "#about"],
@@ -862,7 +863,7 @@ function ProjectPreview({ project }) {
         <div className="ui-endpoint"><span className="ui-method">GET</span><b>/api/games</b><span>200 OK</span></div>
         <div className="ui-code-window">
           <div className="ui-code-head"><span>RESPONSE · JSON</span><span>200 ms</span></div>
-          <pre><span>{"{"}</span>{"\n  "}<i>"items"</i>: [{"\n    "}{"{"} <i>"id"</i>: 1,{"\n      "}<i>"name"</i>: <em>"Stardew Valley"</em>,{"\n      "}<i>"genre"</i>: <em>"Simulation"</em>{"\n    }"}{"\n  "}],{"\n  "}<i>"totalCount"</i>: 24{"\n"}<span>{"}"}</span></pre>
+          <pre><span>{"{"}</span>{"\n  "}<i>"items"</i>: [{"\n    "}{"{"} <i>"id"</i>: 1,{"\n      "}<i>"name"</i>: <em>"Stardew Valley"</em>,{"\n      "}<i>"genre"</i>: <em>"Simulation"</em>{"\n[...]
         </div>
         <div className="ui-api-foot"><span><Network size={11} /> ASP.NET Core Minimal API</span><span>SQLite · EF Core</span></div>
       </div>
