@@ -10,6 +10,7 @@ import {
   ChevronRight,
   Code2,
   Command,
+  Copy,
   Download,
   ExternalLink,
   Gamepad2,
@@ -60,6 +61,8 @@ function App() {
   const [activeSkill, setActiveSkill] = useState("Android");
   const [isLoaded, setIsLoaded] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState("about");
+  const [copiedEmail, setCopiedEmail] = useState(false);
   const reduceMotion = useReducedMotion();
 
   useEffect(() => {
@@ -77,6 +80,9 @@ function App() {
     };
 
     const onKeyDown = (event) => {
+      const typingInField = event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement;
+      if (typingInField && event.key !== "Escape") return;
+
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
         event.preventDefault();
         setPaletteOpen(true);
@@ -90,6 +96,15 @@ function App() {
       if (!event.ctrlKey && !event.metaKey && event.key.toLowerCase() === "p") {
         document.querySelector("#projects")?.scrollIntoView({ behavior: "smooth" });
       }
+      if (!event.ctrlKey && !event.metaKey && event.key.toLowerCase() === "s") {
+        document.querySelector("#skills")?.scrollIntoView({ behavior: "smooth" });
+      }
+      if (!event.ctrlKey && !event.metaKey && event.key.toLowerCase() === "e") {
+        document.querySelector("#experience")?.scrollIntoView({ behavior: "smooth" });
+      }
+      if (!event.ctrlKey && !event.metaKey && event.key.toLowerCase() === "c") {
+        document.querySelector("#contact")?.scrollIntoView({ behavior: "smooth" });
+      }
       if (event.key === "Escape") {
         setPaletteOpen(false);
         setActiveProject(null);
@@ -97,12 +112,31 @@ function App() {
       }
     };
 
+    const onPointerMove = (event) => {
+      document.documentElement.style.setProperty("--pointer-x", `${event.clientX}px`);
+      document.documentElement.style.setProperty("--pointer-y", `${event.clientY}px`);
+    };
+
+    const sectionObserver = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (visible?.target?.id) setActiveSection(visible.target.id);
+      },
+      { rootMargin: "-20% 0px -55%", threshold: [0.1, 0.3, 0.6] },
+    );
+
+    document.querySelectorAll("main section[id]").forEach((section) => sectionObserver.observe(section));
     window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("pointermove", onPointerMove, { passive: true });
     window.addEventListener("keydown", onKeyDown);
 
     return () => {
       clearTimeout(timer);
+      sectionObserver.disconnect();
       window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("pointermove", onPointerMove);
       window.removeEventListener("keydown", onKeyDown);
     };
   }, []);
@@ -124,6 +158,16 @@ function App() {
   const goTo = (id) => {
     setMenuOpen(false);
     document.querySelector(id)?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const copyEmail = async () => {
+    try {
+      await navigator.clipboard.writeText(profile.email);
+      setCopiedEmail(true);
+      window.setTimeout(() => setCopiedEmail(false), 1800);
+    } catch {
+      window.location.href = `mailto:${profile.email}`;
+    }
   };
 
   const reveal = {
@@ -154,7 +198,12 @@ function App() {
 
         <nav className={menuOpen ? "nav-links nav-links-open" : "nav-links"} aria-label="Main navigation">
           {navItems.map(([label, id]) => (
-            <button key={id} onClick={() => goTo(id)}>
+            <button
+              key={id}
+              className={activeSection === id.slice(1) ? "nav-active" : ""}
+              onClick={() => goTo(id)}
+              aria-current={activeSection === id.slice(1) ? "page" : undefined}
+            >
               {label}
             </button>
           ))}
@@ -286,6 +335,16 @@ function App() {
 
             <motion.figure
               className="hero-photo"
+              onPointerMove={(event) => {
+                if (reduceMotion) return;
+                const rect = event.currentTarget.getBoundingClientRect();
+                event.currentTarget.style.setProperty("--pointer-x", `${((event.clientX - rect.left) / rect.width) * 100}%`);
+                event.currentTarget.style.setProperty("--pointer-y", `${((event.clientY - rect.top) / rect.height) * 100}%`);
+              }}
+              onPointerLeave={(event) => {
+                event.currentTarget.style.setProperty("--pointer-x", "50%");
+                event.currentTarget.style.setProperty("--pointer-y", "50%");
+              }}
               initial={{ opacity: 0, y: 22, scale: 0.97 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{
@@ -623,6 +682,10 @@ function App() {
               <a href={profile.leetcode} target="_blank" rel="noreferrer">
                 <Code2 size={17} /> LeetCode
               </a>
+              <button className="copy-email-button" type="button" onClick={copyEmail}>
+                {copiedEmail ? <Check size={17} /> : <Copy size={17} />}
+                {copiedEmail ? "Email copied" : "Copy email"}
+              </button>
             </div>
           </div>
 
@@ -714,6 +777,12 @@ function ProjectCard({ project, index, onOpen }) {
   return (
     <motion.article
       className={`project-card project-card-grid accent-${project.accent}`}
+      onPointerMove={(event) => {
+        if (reduceMotion) return;
+        const rect = event.currentTarget.getBoundingClientRect();
+        event.currentTarget.style.setProperty("--card-x", `${event.clientX - rect.left}px`);
+        event.currentTarget.style.setProperty("--card-y", `${event.clientY - rect.top}px`);
+      }}
       initial={reduceMotion ? false : { opacity: 0, y: 20 }}
       whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
       whileHover={reduceMotion ? undefined : { y: -5, scale: 1.01 }}
@@ -972,19 +1041,26 @@ function ModalBlock({ title, copy }) {
 }
 
 function CommandPalette({ onClose, goTo }) {
+  const [query, setQuery] = useState("");
   const commands = [
     ["Go to projects", "#projects", "P"],
     ["Go to skills", "#skills", "S"],
     ["Go to experience", "#experience", "E"],
     ["Contact Akash", "#contact", "C"],
-  ];
+  ].filter(([label]) => label.toLowerCase().includes(query.trim().toLowerCase()));
 
   return (
     <div className="palette-backdrop" onMouseDown={(event) => event.target === event.currentTarget && onClose()}>
       <div className="command-palette">
         <div className="palette-search">
           <Command size={17} />
-          <input autoFocus placeholder="Search portfolio..." />
+          <input
+            autoFocus
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder="Search portfolio..."
+            aria-label="Search portfolio commands"
+          />
           <kbd>ESC</kbd>
         </div>
 
