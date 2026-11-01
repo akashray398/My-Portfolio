@@ -230,8 +230,24 @@ function App() {
       </header>
 
       <main id="top">
-        <section className="hero section-pad">
+        <section
+          className="hero section-pad"
+          onPointerMove={(event) => {
+            if (reduceMotion) return;
+            const rect = event.currentTarget.getBoundingClientRect();
+            event.currentTarget.style.setProperty("--hero-x", `${((event.clientX - rect.left) / rect.width - 0.5) * 18}px`);
+            event.currentTarget.style.setProperty("--hero-y", `${((event.clientY - rect.top) / rect.height - 0.5) * 18}px`);
+          }}
+          onPointerLeave={(event) => {
+            event.currentTarget.style.setProperty("--hero-x", "0px");
+            event.currentTarget.style.setProperty("--hero-y", "0px");
+          }}
+        >
           <div className="hero-grid" />
+          <div className="hero-noise" aria-hidden="true" />
+          <div className="hero-particles" aria-hidden="true">
+            {[0, 1, 2, 3, 4, 5].map((particle) => <span key={particle} />)}
+          </div>
           <div className="hero-orb orb-one" />
           <div className="hero-orb orb-two" />
 
@@ -261,9 +277,28 @@ function App() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.8, duration: 0.8 }}
               >
-                Building effective,
+                <motion.span
+                  initial={{ opacity: 0, y: 22 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.82, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  Building effective,
+                </motion.span>
                 <br />
-                <em>human-centered</em> product experiences.
+                <motion.em
+                  initial={{ opacity: 0, y: 22 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.98, duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  human-centered
+                </motion.em>{" "}
+                <motion.span
+                  initial={{ opacity: 0, y: 22 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 1.08, duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  product experiences.
+                </motion.span>
               </motion.h1>
 
               <motion.p
@@ -272,8 +307,8 @@ function App() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 1 }}
               >
-                Android Developer <span>•</span> Java Engineer <span>•</span>{" "}
-                Product-minded Builder
+                Android Developer <span>•</span> Kotlin &amp; Jetpack Compose <span>•</span>{" "}
+                Java &amp; Product Engineering
               </motion.p>
 
               <motion.p
@@ -339,13 +374,19 @@ function App() {
               onPointerMove={(event) => {
                 if (reduceMotion) return;
                 const rect = event.currentTarget.getBoundingClientRect();
-                event.currentTarget.style.setProperty("--pointer-x", `${((event.clientX - rect.left) / rect.width) * 100}%`);
-                event.currentTarget.style.setProperty("--pointer-y", `${((event.clientY - rect.top) / rect.height) * 100}%`);
+              const x = (event.clientX - rect.left) / rect.width - 0.5;
+              const y = (event.clientY - rect.top) / rect.height - 0.5;
+              event.currentTarget.style.setProperty("--tilt-x", `${x * 7}deg`);
+              event.currentTarget.style.setProperty("--tilt-y", `${y * -7}deg`);
+              event.currentTarget.style.setProperty("--shine-x", `${(x + 0.5) * 100}%`);
+              event.currentTarget.style.setProperty("--shine-y", `${(y + 0.5) * 100}%`);
               }}
-              onPointerLeave={(event) => {
-                event.currentTarget.style.setProperty("--pointer-x", "50%");
-                event.currentTarget.style.setProperty("--pointer-y", "50%");
-              }}
+            onPointerLeave={(event) => {
+              event.currentTarget.style.setProperty("--tilt-x", "0deg");
+              event.currentTarget.style.setProperty("--tilt-y", "0deg");
+              event.currentTarget.style.setProperty("--shine-x", "50%");
+              event.currentTarget.style.setProperty("--shine-y", "50%");
+            }}
               initial={{ opacity: 0, y: 22, scale: 0.97 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{
@@ -363,6 +404,10 @@ function App() {
                 fetchPriority="high"
                 decoding="async"
               />
+              <span className="tech-label tech-kotlin">Kotlin</span>
+              <span className="tech-label tech-android">Android</span>
+              <span className="tech-label tech-java">Java</span>
+              <span className="tech-label tech-compose">Jetpack Compose</span>
               <div className="portrait-badge">
                 <span className="status-dot" />
                 Open to opportunities
@@ -932,7 +977,13 @@ function ProjectPreview({ project }) {
         <div className="ui-endpoint"><span className="ui-method">GET</span><b>/api/games</b><span>200 OK</span></div>
         <div className="ui-code-window">
           <div className="ui-code-head"><span>RESPONSE · JSON</span><span>200 ms</span></div>
-          <pre><span>{"{"}</span>{"\n  "}<i>"items"</i>: [{"\n    "}{"{"} <i>"id"</i>: 1,{"\n      "}<i>"name"</i>: <em>"Stardew Valley"</em>,{"\n      "}<i>"genre"</i>: <em>"Simulation"</em>{"\n[...]
+          <pre>{`{
+  "items": [{
+    "id": 1,
+    "name": "Stardew Valley",
+    "genre": "Simulation"
+  }]
+}`}</pre>
         </div>
         <div className="ui-api-foot"><span><Network size={11} /> ASP.NET Core Minimal API</span><span>SQLite · EF Core</span></div>
       </div>

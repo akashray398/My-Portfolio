@@ -11,7 +11,7 @@ export const profile = {
   location: 'India',
   availability: 'Open to Android, Java, and product-focused engineering roles',
   shortBio:
-    'Information Technology undergraduate building polished Android apps with Kotlin and Jetpack Compose, with hands-on experience in AI-powered products, backend APIs, and practical problem-solving.',
+    'Information Technology undergraduate engineering polished Android experiences with Kotlin and Jetpack Compose, backed by Java, Firebase, REST APIs, and product-focused problem solving.',
   summary:
     'I’m an Information Technology undergraduate focused on Android development, building thoughtful mobile experiences with Kotlin and Jetpack Compose. I enjoy turning practical problems into clear, dependable products.',
 };
