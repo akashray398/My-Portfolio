@@ -11,6 +11,7 @@ import {
   Code2,
   Command,
   Copy,
+  Database,
   Download,
   ExternalLink,
   Gamepad2,
@@ -29,6 +30,7 @@ import {
   Sparkles,
   Wifi,
   Terminal,
+  Wrench,
   X,
 } from "lucide-react";
 import {
@@ -424,20 +426,86 @@ function App() {
         </section>
 
         <motion.section id="about" className="section-pad about-section" {...reveal}>
-          <SectionIntro
-            eyebrow="About me"
-            title={
-              <>
-                I turn ideas into
+          <div className="section-intro about-intro">
+            <div>
+              <span className="eyebrow">About me</span>
+              <h2 aria-label="I turn ideas into usable software">
+                {["I", "turn", "ideas", "into"].map((word, index) => (
+                  <motion.span
+                    className="about-word"
+                    key={word}
+                    initial={reduceMotion ? false : { opacity: 0, y: 18, filter: "blur(8px)" }}
+                    whileInView={reduceMotion ? undefined : { opacity: 1, y: 0, filter: "blur(0px)" }}
+                    viewport={{ once: true, amount: 0.8 }}
+                    transition={{ delay: reduceMotion ? 0 : index * 0.07, duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+                  >
+                    {word}
+                  </motion.span>
+                ))}
                 <br />
-                <em>usable software</em>
-              </>
-            }
-          />
+                {["usable software"].map((phrase) => (
+                  <motion.em
+                    key={phrase}
+                    initial={reduceMotion ? false : { opacity: 0, y: 18, filter: "blur(8px)" }}
+                    whileInView={reduceMotion ? undefined : { opacity: 1, y: 0, filter: "blur(0px)" }}
+                    viewport={{ once: true, amount: 0.8 }}
+                    transition={{ delay: reduceMotion ? 0 : 0.32, duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+                  >
+                    {phrase}
+                  </motion.em>
+                ))}
+              </h2>
+            </div>
+            <p className="about-intro-note">Android engineering · Product thinking · Reliable execution</p>
+          </div>
 
           <div className="about-grid">
             <div className="about-copy">
-              <p className="lead">{profile.summary}</p>
+              <motion.p
+                className="lead"
+                initial={reduceMotion ? false : { opacity: 0, y: 20 }}
+                whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.45 }}
+                transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+              >
+                {profile.summary}
+              </motion.p>
+
+              <motion.div
+                className="engineering-philosophy"
+                initial={reduceMotion ? false : { opacity: 0, y: 16 }}
+                whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.45 }}
+                transition={{ delay: 0.12, duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+              >
+                <span className="philosophy-index">01</span>
+                <div>
+                  <span className="eyebrow">Engineering philosophy</span>
+                  <p>Build for clarity, maintainability, and real use—then refine the details users can feel.</p>
+                </div>
+              </motion.div>
+
+              <div className="technology-strip" aria-label="Technology stack">
+                <div className="technology-strip-label">
+                  <span>Core stack</span>
+                  <i aria-hidden="true" />
+                </div>
+                <div className="technology-chips">
+                  {["Android", "Kotlin", "Java", "Jetpack Compose", "MVVM", "Clean Architecture"].map((technology, index) => (
+                    <motion.span
+                      className="technology-chip"
+                      key={technology}
+                      initial={reduceMotion ? false : { opacity: 0, y: 10 }}
+                      whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
+                      viewport={{ once: true, amount: 0.5 }}
+                      transition={{ delay: reduceMotion ? 0 : 0.2 + index * 0.055, duration: 0.42 }}
+                      tabIndex={0}
+                    >
+                      {technology}
+                    </motion.span>
+                  ))}
+                </div>
+              </div>
             </div>
 
             <div className="metrics">
@@ -446,61 +514,63 @@ function App() {
                 { value: "150+", unit: "", label: "LeetCode problems", icon: Code2 },
                 { value: "Android", unit: "", label: "Primary focus", icon: Smartphone },
                 { value: "2027", unit: "", label: "Graduation year", icon: CalendarDays },
-              ].map(({ value, unit, label, icon: MetricIcon }, index) => (
-                <motion.article
-                  className="metric"
-                  key={label}
-                  initial={reduceMotion ? false : { opacity: 0, y: 16 }}
-                  whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
-                  whileHover={reduceMotion ? undefined : { y: -4 }}
-                  viewport={{ once: true, amount: 0.35 }}
-                  transition={{
-                    duration: reduceMotion ? 0 : 0.45,
-                    delay: reduceMotion ? 0 : index * 0.08,
-                    ease: [0.22, 1, 0.36, 1],
-                  }}
-                >
-                  <span className="metric-icon"><MetricIcon size={17} aria-hidden="true" /></span>
-                  <strong>{value}<small>{unit}</small></strong>
-                  <span className="metric-label">{label}</span>
-                </motion.article>
+              ].map((metric, index) => (
+                <StatCard key={metric.label} metric={metric} index={index} reduceMotion={reduceMotion} />
               ))}
             </div>
           </div>
         </motion.section>
 
         <motion.section id="education" className="section-pad education-section" {...reveal}>
-          <SectionIntro
-            eyebrow="Education"
-            title={
-              <>
-                Learning with
-                <br />
-                <em>strong foundations</em>
-              </>
-            }
-          />
-          <div className="education-grid">
-            {education.map((item, index) => (
-              <motion.article
-                className="education-card"
-                key={`${item.qualification}-${item.institution}`}
-                initial={reduceMotion ? false : { opacity: 0, y: 18 }}
+          <div className="section-intro education-intro">
+            <div>
+              <motion.span
+                className="eyebrow"
+                initial={reduceMotion ? false : { opacity: 0, y: 10 }}
                 whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
-                whileHover={reduceMotion ? undefined : { y: -5 }}
-                viewport={{ once: true, amount: 0.3 }}
-                transition={{
-                  duration: reduceMotion ? 0 : 0.48,
-                  delay: reduceMotion ? 0 : index * 0.1,
-                  ease: [0.22, 1, 0.36, 1],
-                }}
+                viewport={{ once: true, amount: 0.8 }}
+                transition={{ duration: 0.45 }}
               >
-                <span className="eyebrow">{item.date}</span>
-                <h3>{item.qualification}</h3>
-                <p className="education-subject">{item.subject}</p>
-                <p>{item.institution}</p>
-                <strong>{item.result}</strong>
-              </motion.article>
+                Education
+              </motion.span>
+              <h2 aria-label="Learning with strong foundations">
+                {["Learning", "with"].map((word, index) => (
+                  <motion.span
+                    className="education-word"
+                    key={word}
+                    initial={reduceMotion ? false : { opacity: 0, y: 18, filter: "blur(8px)" }}
+                    whileInView={reduceMotion ? undefined : { opacity: 1, y: 0, filter: "blur(0px)" }}
+                    viewport={{ once: true, amount: 0.8 }}
+                    transition={{ delay: reduceMotion ? 0 : index * 0.08, duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+                  >
+                    {word}
+                  </motion.span>
+                ))}
+                <br />
+                <motion.em
+                  initial={reduceMotion ? false : { opacity: 0, y: 18, filter: "blur(8px)" }}
+                  whileInView={reduceMotion ? undefined : { opacity: 1, y: 0, filter: "blur(0px)" }}
+                  viewport={{ once: true, amount: 0.8 }}
+                  transition={{ delay: reduceMotion ? 0 : 0.18, duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  strong foundations
+                </motion.em>
+              </h2>
+            </div>
+            <p>Academic milestones · Information Technology</p>
+          </div>
+
+          <div className="education-timeline">
+            <motion.div
+              className="education-timeline-line"
+              initial={reduceMotion ? false : { scaleY: 0 }}
+              whileInView={reduceMotion ? undefined : { scaleY: 1 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+              aria-hidden="true"
+            />
+            {education.map((item, index) => (
+              <EducationCard key={`${item.qualification}-${item.institution}`} item={item} index={index} reduceMotion={reduceMotion} />
             ))}
           </div>
         </motion.section>
@@ -526,34 +596,115 @@ function App() {
                   onClick={() => setActiveSkill(group)}
                   role="tab"
                   aria-selected={activeSkill === group}
+                  aria-controls="skills-panel"
+                  id={`skill-tab-${index}`}
+                  tabIndex={activeSkill === group ? 0 : -1}
+                  onKeyDown={(event) => {
+                    const groups = Object.keys(skillGroups);
+                    const currentIndex = groups.indexOf(group);
+                    if (event.key === "ArrowDown" || event.key === "ArrowRight") {
+                      event.preventDefault();
+                      const next = groups[(currentIndex + 1) % groups.length];
+                      setActiveSkill(next);
+                      document.getElementById(`skill-tab-${groups.indexOf(next)}`)?.focus();
+                    }
+                    if (event.key === "ArrowUp" || event.key === "ArrowLeft") {
+                      event.preventDefault();
+                      const previous = groups[(currentIndex - 1 + groups.length) % groups.length];
+                      setActiveSkill(previous);
+                      document.getElementById(`skill-tab-${groups.indexOf(previous)}`)?.focus();
+                    }
+                  }}
                 >
+                  {activeSkill === group && (
+                    <motion.span className="skill-tab-active-marker" layoutId="skill-active-marker" transition={{ duration: reduceMotion ? 0 : 0.35, ease: [0.22, 1, 0.36, 1] }} />
+                  )}
                   <span>0{index + 1}</span>
-                  {group}
+                  <span className="skill-tab-icon" aria-hidden="true">
+                    {group === "Android" ? <Smartphone size={16} /> :
+                      group === "Programming" ? <Code2 size={16} /> :
+                      group === "Backend & APIs" ? <Network size={16} /> :
+                      group === "Databases" ? <Database size={16} /> : <Wrench size={16} />}
+                  </span>
+                  <span className="skill-tab-name">{group}</span>
                   <ChevronRight size={15} />
                 </button>
               ))}
             </div>
 
-            <div className="skill-display" role="tabpanel" aria-live="polite">
+            <motion.div
+              id="skills-panel"
+              className="skill-display"
+              role="tabpanel"
+              aria-live="polite"
+              aria-labelledby={`skill-tab-${Object.keys(skillGroups).indexOf(activeSkill)}`}
+              onPointerMove={(event) => {
+                if (reduceMotion) return;
+                const rect = event.currentTarget.getBoundingClientRect();
+                event.currentTarget.style.setProperty("--skill-x", `${event.clientX - rect.left}px`);
+                event.currentTarget.style.setProperty("--skill-y", `${event.clientY - rect.top}px`);
+              }}
+            >
               <div className="skill-display-head">
                 <span>Core capabilities</span>
                 <span className="skill-count">{skillGroups[activeSkill].length} tools</span>
               </div>
 
-              <div className="skill-cloud">
-                {skillGroups[activeSkill].map((skill, index) => (
-                  <motion.div className="skill-chip" key={skill} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.03 }}>
-                    <Code2 size={15} />
-                    {skill}
-                  </motion.div>
-                ))}
-              </div>
+              <AnimatePresence mode="wait">
+                <motion.div
+                  className="skill-cloud"
+                  key={activeSkill}
+                  initial={reduceMotion ? false : { opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={reduceMotion ? undefined : { opacity: 0, y: -8 }}
+                  transition={{ duration: reduceMotion ? 0 : 0.32, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  {skillGroups[activeSkill].map((skill, index) => {
+                    const SkillIcon = activeSkill === "Android" ? Smartphone :
+                      activeSkill === "Programming" ? Code2 :
+                      activeSkill === "Backend & APIs" ? Network :
+                      activeSkill === "Databases" ? Database : Wrench;
+                    return (
+                      <motion.div
+                        className="skill-chip"
+                        key={skill}
+                        tabIndex={0}
+                        initial={reduceMotion ? false : { opacity: 0, y: 14, scale: 0.96 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        transition={{ duration: reduceMotion ? 0 : 0.38, delay: reduceMotion ? 0 : index * 0.045, ease: [0.22, 1, 0.36, 1] }}
+                        onPointerMove={(event) => {
+                          if (reduceMotion) return;
+                          const rect = event.currentTarget.getBoundingClientRect();
+                          event.currentTarget.style.setProperty("--chip-x", `${event.clientX - rect.left}px`);
+                          event.currentTarget.style.setProperty("--chip-y", `${event.clientY - rect.top}px`);
+                        }}
+                        onPointerLeave={(event) => {
+                          event.currentTarget.style.setProperty("--chip-x", "50%");
+                          event.currentTarget.style.setProperty("--chip-y", "50%");
+                        }}
+                      >
+                        <SkillIcon size={15} aria-hidden="true" />
+                        <span>{skill}</span>
+                      </motion.div>
+                    );
+                  })}
+                </motion.div>
+              </AnimatePresence>
 
-              <div className="skill-note">
-                <Sparkles size={16} />
-                Career interests: Android development, mobile engineering, Generative AI, and AI agents.
-              </div>
-            </div>
+              <motion.div
+                className="skill-note"
+                initial={reduceMotion ? false : { opacity: 0, y: 8 }}
+                whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.6 }}
+                transition={{ duration: reduceMotion ? 0 : 0.45, delay: reduceMotion ? 0 : 0.12 }}
+              >
+                <span className="skill-note-icon"><Sparkles size={15} aria-hidden="true" /></span>
+                <div>
+                  <span className="skill-note-label">Career interests</span>
+                  <p>{careerInterests.join(" · ")}</p>
+                </div>
+              </motion.div>
+            </motion.div>
           </div>
         </motion.section>
 
@@ -697,7 +848,9 @@ function App() {
           <div className="career-interests">
             <span className="eyebrow">Career interests</span>
             <div className="tag-row">
-              {careerInterests.map((interest) => <span key={interest}>{interest}</span>)}
+              {careerInterests.map((interest) => (
+                <span key={interest} tabIndex={0}>{interest}</span>
+              ))}
             </div>
           </div>
         </motion.section>
@@ -814,6 +967,178 @@ function SectionIntro({ eyebrow, title, trailing }) {
       </div>
       {trailing && <p>{trailing}</p>}
     </div>
+  );
+}
+
+function CountUpValue({ value, decimals = 0, suffix = "", reduceMotion }) {
+  const [started, setStarted] = useState(false);
+  const [display, setDisplay] = useState(reduceMotion ? value : 0);
+
+  useEffect(() => {
+    if (!started || reduceMotion) {
+      if (reduceMotion) setDisplay(value);
+      return;
+    }
+
+    const start = performance.now();
+    const duration = 900;
+    let frame;
+
+    const tick = (now) => {
+      const progress = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setDisplay(value * eased);
+      if (progress < 1) frame = requestAnimationFrame(tick);
+    };
+
+    frame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame);
+  }, [started, value, reduceMotion]);
+
+  return (
+    <motion.span
+      onViewportEnter={() => setStarted(true)}
+      viewport={{ once: true, amount: 0.6 }}
+      aria-label={`${value}${suffix}`}
+    >
+      {display.toFixed(decimals)}{suffix}
+    </motion.span>
+  );
+}
+
+function StatCard({ metric, index, reduceMotion }) {
+  const { value, unit, label, icon: MetricIcon } = metric;
+  const numericValue =
+    value === "8.04" ? 8.04 :
+    value === "150+" ? 150 :
+    value === "2027" ? 2027 : null;
+
+  return (
+    <motion.article
+      className="metric"
+      initial={reduceMotion ? false : { opacity: 0, y: 20, scale: 0.97 }}
+      whileInView={reduceMotion ? undefined : { opacity: 1, y: 0, scale: 1 }}
+      viewport={{ once: true, amount: 0.35 }}
+      transition={{
+        duration: reduceMotion ? 0 : 0.5,
+        delay: reduceMotion ? 0 : index * 0.09,
+        ease: [0.22, 1, 0.36, 1],
+      }}
+    >
+      <div
+        className="metric-interactive"
+        tabIndex={0}
+        onPointerMove={(event) => {
+          if (reduceMotion) return;
+          const rect = event.currentTarget.getBoundingClientRect();
+          const x = (event.clientX - rect.left) / rect.width;
+          const y = (event.clientY - rect.top) / rect.height;
+          event.currentTarget.style.setProperty("--metric-x", `${x * 100}%`);
+          event.currentTarget.style.setProperty("--metric-y", `${y * 100}%`);
+          event.currentTarget.style.setProperty("--metric-rx", `${(0.5 - y) * 8}deg`);
+          event.currentTarget.style.setProperty("--metric-ry", `${(x - 0.5) * 8}deg`);
+        }}
+        onPointerLeave={(event) => {
+          event.currentTarget.style.setProperty("--metric-x", "50%");
+          event.currentTarget.style.setProperty("--metric-y", "50%");
+          event.currentTarget.style.setProperty("--metric-rx", "0deg");
+          event.currentTarget.style.setProperty("--metric-ry", "0deg");
+        }}
+      >
+        <span className="metric-icon"><MetricIcon size={17} aria-hidden="true" /></span>
+        <strong>
+          {numericValue !== null ? (
+            <CountUpValue
+              value={numericValue}
+              decimals={value === "8.04" ? 2 : 0}
+              suffix={value === "150+" ? "+" : ""}
+              reduceMotion={reduceMotion}
+            />
+          ) : value}
+          {unit && <small>{unit}</small>}
+        </strong>
+        <span className="metric-label">{label}</span>
+      </div>
+    </motion.article>
+  );
+}
+
+function EducationCard({ item, index, reduceMotion }) {
+  const isBachelor = index === 0;
+  const maxValue = isBachelor ? 10 : 100;
+  const value = isBachelor ? 8.04 : 72;
+  const progress = (value / maxValue) * 100;
+
+  return (
+    <motion.article
+      className="education-timeline-item"
+      initial={reduceMotion ? false : { opacity: 0, x: index % 2 === 0 ? 24 : -24, y: 12 }}
+      whileInView={reduceMotion ? undefined : { opacity: 1, x: 0, y: 0 }}
+      viewport={{ once: true, amount: 0.28 }}
+      transition={{ duration: reduceMotion ? 0 : 0.62, delay: reduceMotion ? 0 : index * 0.14, ease: [0.22, 1, 0.36, 1] }}
+    >
+      <motion.span
+        className="education-node"
+        initial={reduceMotion ? false : { scale: 0 }}
+        whileInView={reduceMotion ? undefined : { scale: 1 }}
+        viewport={{ once: true, amount: 0.8 }}
+        transition={{ delay: reduceMotion ? 0 : index * 0.14 + 0.18, type: "spring", stiffness: 180, damping: 18 }}
+        aria-hidden="true"
+      />
+      <div
+        className="education-card-interactive"
+        tabIndex={0}
+        onPointerMove={(event) => {
+          if (reduceMotion) return;
+          const rect = event.currentTarget.getBoundingClientRect();
+          const x = (event.clientX - rect.left) / rect.width;
+          const y = (event.clientY - rect.top) / rect.height;
+          event.currentTarget.style.setProperty("--education-x", `${x * 100}%`);
+          event.currentTarget.style.setProperty("--education-y", `${y * 100}%`);
+          event.currentTarget.style.setProperty("--education-rx", `${(0.5 - y) * 7}deg`);
+          event.currentTarget.style.setProperty("--education-ry", `${(x - 0.5) * 7}deg`);
+        }}
+        onPointerLeave={(event) => {
+          event.currentTarget.style.setProperty("--education-x", "50%");
+          event.currentTarget.style.setProperty("--education-y", "50%");
+          event.currentTarget.style.setProperty("--education-rx", "0deg");
+          event.currentTarget.style.setProperty("--education-ry", "0deg");
+        }}
+      >
+        <div className="education-card-top">
+          <span className="education-icon" aria-hidden="true"><GraduationCap size={20} /></span>
+          <span className="education-date"><CalendarDays size={13} aria-hidden="true" />{item.date}</span>
+        </div>
+        <div className="education-card-copy">
+          <p className="education-subject">{item.subject}</p>
+          <h3>{item.qualification}</h3>
+          <p>{item.institution}</p>
+        </div>
+
+        <div className="education-performance">
+          <div className="education-performance-head">
+            <span>{isBachelor ? "CGPA scale" : "Intermediate percentage"}</span>
+            <strong>
+              <CountUpValue
+                value={value}
+                decimals={isBachelor ? 2 : 0}
+                suffix={isBachelor ? "" : "%"}
+                reduceMotion={reduceMotion}
+              />
+              {isBachelor && <small> / 10</small>}
+            </strong>
+          </div>
+          <div className="education-progress" role="progressbar" aria-label={isBachelor ? "CGPA 8.04 out of 10" : "Percentage 72 percent"} aria-valuemin="0" aria-valuemax={maxValue} aria-valuenow={value}>
+            <motion.span
+              initial={reduceMotion ? false : { scaleX: 0 }}
+              whileInView={reduceMotion ? undefined : { scaleX: progress / 100 }}
+              viewport={{ once: true, amount: 0.7 }}
+              transition={{ duration: reduceMotion ? 0 : 1.05, delay: reduceMotion ? 0 : index * 0.14 + 0.25, ease: [0.22, 1, 0.36, 1] }}
+            />
+          </div>
+        </div>
+      </div>
+    </motion.article>
   );
 }
 
