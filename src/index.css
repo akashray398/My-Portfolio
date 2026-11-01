@@ -5,11 +5,26 @@
   line-height: 1.5;
   font-weight: 400;
   color: #edf5ff;
-  background: #070b14;
+  background:
+    radial-gradient(circle at top, rgba(124, 92, 255, 0.16), transparent 30%),
+    linear-gradient(180deg, #050816 0%, #0a1020 100%);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  --bg-1: #050816;
+  --bg-2: #0b1222;
+  --surface: rgba(13, 19, 33, 0.82);
+  --surface-strong: rgba(18, 26, 43, 0.96);
+  --card: rgba(17, 24, 39, 0.9);
+  --line: rgba(148, 163, 184, 0.18);
+  --text: #edf5ff;
+  --muted: #9aa9c4;
+  --soft: #cad8f0;
+  --accent: #8b5cf6;
+  --accent-2: #38bdf8;
+  --accent-3: #22c55e;
+  --shadow: 0 20px 60px rgba(15, 23, 42, 0.5);
 }
 
 *,
@@ -25,7 +40,10 @@ html {
 body {
   margin: 0;
   min-width: 0;
-  background: #070b14;
+  background:
+    radial-gradient(circle at top, rgba(139, 92, 246, 0.1), transparent 35%),
+    linear-gradient(180deg, #050816 0%, #0b1222 100%);
+  color: var(--text);
 }
 
 button,
@@ -55,5 +73,5 @@ img {
 
 ::selection {
   color: #08121f;
-  background: rgba(124, 140, 255, 0.9);
+  background: rgba(139, 92, 246, 0.9);
 }
